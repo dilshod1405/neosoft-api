@@ -1,0 +1,243 @@
+Setting Up Celery in a Django Project
+
+This guide explains how to integrate Celery with a Django project for handling asynchronous tasks. It assumes you have a Django project set up and are familiar with basic Django concepts.
+
+Prerequisites
+
+
+
+
+
+Python 3.12
+
+
+
+Django project initialized
+
+
+
+A message broker (e.g., Redis or RabbitMQ; this guide uses Redis for simplicity)
+
+Step-by-Step Setup
+
+1. Install Required Packages
+
+Install Celery and the Redis client (or another broker client like pika for RabbitMQ).
+
+pip install celery redis
+
+For RabbitMQ:
+
+pip install celery pika
+
+2. Install and Configure Redis
+
+
+
+
+
+Install Redis:
+
+
+
+
+
+Ubuntu: sudo apt-get install redis-server
+
+
+
+macOS: brew install redis
+
+
+
+Windows: Use a Redis Docker container or WSL
+
+
+
+Start Redis:
+
+redis-server
+
+
+
+Verify Redis is running:
+
+redis-cli ping
+
+Should return PONG.
+
+3. Configure Celery in Django
+
+Create a celery.py file in your project directory (e.g., myproject/myproject/celery.py).
+
+import os
+from celery import Celery
+
+# Set the default Django settings module for the 'celery' program
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'myproject.settings')
+
+# Create a Celery instance and configure it using the settings from Django
+app = Celery('myproject')
+
+# Load task modules from all registered Django app configs
+app.config_from_object('django.conf:settings', namespace='CELERY')
+
+# Auto-discover tasks in all installed apps
+app.autodiscover_tasks()
+
+Replace myproject with your Django project name.
+
+4. Update Django Settings
+
+Add Celery settings to settings.py.
+
+# Celery settings
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Use your Redis or RabbitMQ URL
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # For storing task results
+CELERY_ACCEPT_CONTENT = ['json']  # Task serialization format
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'  # Match Django's timezone
+
+For RabbitMQ:
+
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+
+5. Modify __init__.py
+
+Ensure Celery loads with Django by updating myproject/myproject/__init__.py:
+
+from .celery import app as celery_app
+
+__all__ = ('celery_app',)
+
+6. Create a Task
+
+Create a task in an app (e.g., myapp/tasks.py).
+
+from celery import shared_task
+
+@shared_task
+def example_task(x, y):
+    return x + y
+
+7. Start the Celery Worker
+
+Run the Celery worker from your project directory:
+
+celery -A myproject worker --loglevel=info
+
+Replace myproject with your project name.
+
+8. Call the Task
+
+Call the task asynchronously in your Django code (e.g., in a view).
+
+from myapp.tasks import example_task
+
+def my_view(request):
+    example_task.delay(4, 5)  # Runs asynchronously, returns 9 when completed
+    return HttpResponse("Task has been queued!")
+
+9. Optional: Run Celery Beat for Scheduled Tasks
+
+For periodic tasks, install django-celery-beat:
+
+pip install django-celery-beat
+
+Add to INSTALLED_APPS in settings.py:
+
+INSTALLED_APPS = [
+    ...
+    'django_celery_beat',
+]
+
+Run migrations:
+
+python manage.py migrate
+
+Start Celery Beat:
+
+celery -A myproject beat --loglevel=info
+
+Configure periodic tasks via Django admin or programmatically.
+
+10. Test Your Setup
+
+
+
+
+
+Ensure Redis (or your broker) is running.
+
+
+
+Start the Celery worker.
+
+
+
+Trigger a task (e.g., via Django shell: example_task.delay(2, 3)).
+
+
+
+Check worker logs to confirm the task executed and returned 5.
+
+Additional Tips
+
+
+
+
+
+Debugging: Use --loglevel=debug for detailed logs.
+
+
+
+Production: Use a process manager (e.g., supervisor or systemd) for Celery workers.
+
+
+
+Monitoring: Use Flower for task monitoring:
+
+pip install flower
+celery -A myproject flower
+
+Access at http://localhost:5555.
+
+
+
+Error Handling: Add retries or error handling in tasks:
+
+@shared_task(bind=True, max_retries=3)
+def example_task(self, x, y):
+    try:
+        return x + y
+    except Exception as e:
+        self.retry(countdown=60)  # Retry after 60 seconds
+
+Common Issues
+
+
+
+
+
+Broker Connection Errors: Verify the broker is running and CELERY_BROKER_URL is correct.
+
+
+
+Task Not Found: Ensure app.autodiscover_tasks() is set and tasks are in tasks.py.
+
+
+
+Django Settings: Confirm DJANGO_SETTINGS_MODULE matches your project’s settings.
+
+Resources
+
+
+
+
+
+Celery Documentation
+
+
+
+Django-Celery Integration Guide

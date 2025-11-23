@@ -1,0 +1,84 @@
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+media/
+staticfiles/
+static/
+
+# If using local settings
+/local_settings.py
+/.env
+.env
+.env.*
+
+# PyCharm / VSCode
+.idea/
+.vscode/
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Migrations (OPTIONAL: agar commit qilmoqchi bo‘lmasang)
+# */migrations/*
+# !*/migrations/__init__.py
+
+# Byte-compiled
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+develop-eggs/
+dist/
+eggs/
+.eggs/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+
+# pytest
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Coverage
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+
+# Django SQL
+*.sql
+
+# Logs
+logs/
+*.log
+
+# Local database files
+*.sqlite3
+
+# dotenv
+*.env
+
+# Media
+/media/
+
+# Static
+/static/
