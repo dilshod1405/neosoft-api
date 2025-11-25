@@ -22,14 +22,20 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 
 
+REDIS_HOST = config("REDIS_HOST", default="localhost")
+REDIS_PORT = config("REDIS_PORT", default="6379")
+REDIS_DB = config("REDIS_DB", default="0")
+REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
 
 
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Tashkent'
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
 
 
 CELERY_BEAT_SCHEDULE = {
@@ -42,8 +48,6 @@ CELERY_BEAT_SCHEDULE = {
 
 # Run this command for schedule tasks: celery -A edu_neosoft_api beat --loglevel=info
 # Run this command for worker: celery -A edu_neosoft_api worker --loglevel=info
-
-
 
 
 
@@ -71,3 +75,5 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "resend"
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+
+

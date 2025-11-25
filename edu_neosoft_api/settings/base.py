@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     'authentication',
     'content',
     'payment',
-    'discounts',
+    'discount',
     'payme',
 ]
 
@@ -211,3 +211,5 @@ LOGGING = {
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1048576000  # 1 GB
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1048576000  # 1 GB
+
+AUTH_USER_MODEL = "authentication.CustomUser"
