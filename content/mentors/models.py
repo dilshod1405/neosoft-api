@@ -3,7 +3,6 @@ from authentication.models import CustomUser
 
 class MentorProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="mentor_profile")
-
     passport_number = models.CharField(
         max_length=20,
         unique=True,
@@ -39,7 +38,7 @@ class MentorContract(models.Model):
 
     document_id = models.CharField(max_length=64, null=True, blank=True)
     short_url = models.CharField(max_length=255, null=True, blank=True)
-    status = models.IntegerField(default=0)  # TrustMe status
+    status = models.IntegerField(default=0)
 
     sent_at = models.DateTimeField(null=True, blank=True)
     signed_at = models.DateTimeField(null=True, blank=True)

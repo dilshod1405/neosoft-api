@@ -115,11 +115,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',),
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'utils.device_token_checker.CustomJWTAuthentication'
+    ],
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
+    
 }
 
+AUTHENTICATION_BACKENDS = [
+    'authentication.backends.EmailOrPhoneBackend',
+]
 
+AUTH_USER_MODEL = "authentication.CustomUser"
 
 
 SIMPLE_JWT = {
@@ -212,4 +220,3 @@ LOGGING = {
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1048576000  # 1 GB
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1048576000  # 1 GB
 
-AUTH_USER_MODEL = "authentication.CustomUser"

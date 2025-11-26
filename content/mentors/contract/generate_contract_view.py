@@ -55,13 +55,12 @@ class GenerateContractView(APIView):
             "passport_issue_date": mentor.passport_issue_date,
             "mentor_address": mentor.address,
             "mentor_phone": user.phone,
-            "mentor_card": masked_card,   # ← MASKED CARD KETDI
+            "mentor_card": masked_card,
         }))
 
         pdf_path = generate_contract_pdf({"contract_body": rendered_body})
 
         contract.pdf_file.name = "contracts/" + os.path.basename(pdf_path)
-        contract.status = 0
         contract.generated_at = timezone.now()
         contract.save()
 
