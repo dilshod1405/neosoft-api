@@ -7,9 +7,8 @@ import os
 
 from .contract_text_uz import CONTRACT_TEXT_UZ
 from .contract_text_ru import CONTRACT_TEXT_RU
-from mentors.models import MentorContract
+from authentication.mentors.models import MentorContract, MentorProfile
 from utils.generator_contract_pdf import generate_contract_pdf
-from validators.masking_card import mask_card_number
 
 
 class GenerateContractView(APIView):
@@ -21,7 +20,13 @@ class GenerateContractView(APIView):
         if not user.is_mentor:
             return Response({"error": "Siz mentor emassiz."}, status=403)
 
-        mentor = user.mentor_profile
+        try:
+            mentor = user.mentor_profile
+        except MentorProfile.DoesNotExist:
+            return Response({
+                "success": False,
+                "message": "Mentor profili topilmadi."
+            }, status=400)
 
         contract, created = MentorContract.objects.get_or_create(mentor=mentor)
 
@@ -44,7 +49,6 @@ class GenerateContractView(APIView):
         lang = request.data.get("lang", "uz")
         template_text = CONTRACT_TEXT_UZ if lang == "uz" else CONTRACT_TEXT_RU
 
-        masked_card = mask_card_number(mentor.card_number)
 
         rendered_body = Template(template_text).render(Context({
             "contract_number": f"MN-{contract.pk}",
@@ -55,7 +59,7 @@ class GenerateContractView(APIView):
             "passport_issue_date": mentor.passport_issue_date,
             "mentor_address": mentor.address,
             "mentor_phone": user.phone,
-            "mentor_card": masked_card,
+            "mentor_card": mentor.card_number,
         }))
 
         pdf_path = generate_contract_pdf({"contract_body": rendered_body})
@@ -66,7 +70,7 @@ class GenerateContractView(APIView):
 
         return Response({
             "success": True,
-            "message": "Shartnoma PDF yaratildi",
+            "message": "Contract pdf generated successfully",
             "pdf_url": request.build_absolute_uri("/media/" + contract.pdf_file.name),
             "contract_id": contract.pk
         })

@@ -7,6 +7,12 @@ from utils.get_client_ip import get_client_ip
 
 User = CustomUser
 
+
+
+# ============================================================
+#                  USER REGISTER SERIALIZER
+# ============================================================
+
 class RegisterUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
     phone = serializers.CharField(required=False, allow_blank=True, validators=[validate_uzbek_phone])
@@ -35,6 +41,11 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
 
 
+
+# ============================================================
+#                  USER LOGIN SERIALIZER
+# ============================================================
+
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     email = serializers.EmailField(required=False)
     phone = serializers.CharField(required=False)
@@ -62,18 +73,20 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         if not user.is_verified:
             raise serializers.ValidationError("Account is not verified.")
 
-        # Generate JWT tokens
         refresh = self.get_token(user)
         access = str(refresh.access_token)
         jti = refresh["jti"]
 
         ip = get_client_ip(self.context.get("request"))
         ttl = 7 * 24 * 60 * 60
-        get_redis.delete(f"user_session:{user.id}")
-        get_redis.delete(f"ip_session:{ip}")
 
-        get_redis.setex(f"user_session:{user.id}", ttl, f"{jti}:{ip}")
-        get_redis.setex(f"ip_session:{ip}", ttl, f"{user.id}:{jti}")
+        redis_client = get_redis()  # <-- MUHIM
+
+        redis_client.delete(f"user_session:{user.id}")
+        redis_client.delete(f"ip_session:{ip}")
+
+        redis_client.setex(f"user_session:{user.id}", ttl, f"{jti}:{ip}")
+        redis_client.setex(f"ip_session:{ip}", ttl, f"{user.id}:{jti}")
 
         return {
             "refresh": str(refresh),
@@ -89,6 +102,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 
+
+
+# ============================================================
+#                  RESEND OTP CODE SERIALIZER
+# ============================================================
 
 class ResendCodeSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)

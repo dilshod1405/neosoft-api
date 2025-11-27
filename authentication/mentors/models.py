@@ -47,3 +47,24 @@ class MentorContract(models.Model):
 
     def __str__(self):
         return f"Contract for {self.mentor.user.full_name}"
+
+
+
+
+class InstructorProfile(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="instructor_profile")
+
+    bio_uz = models.TextField(max_length=500, blank=True)
+    bio_ru = models.TextField(max_length=500, blank=True)
+
+    expertise = models.CharField(max_length=200, blank=True)
+
+    qualifications_uz = models.TextField(max_length=1000, blank=True)
+    qualifications_ru = models.TextField(max_length=1000, blank=True)
+
+    profile_picture = models.ImageField(upload_to='instructors/', blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Instructor: {self.user.full_name}"

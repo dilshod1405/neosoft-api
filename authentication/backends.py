@@ -2,6 +2,10 @@ from django.contrib.auth.backends import ModelBackend
 from authentication.models import CustomUser
 from utils.get_client_ip import get_client_ip
 
+# ============================================================
+#                  CHECK UNIQUE DEVICE BY IP
+# ============================================================
+
 class EmailOrPhoneBackend(ModelBackend):
     def authenticate(self, request, email=None, phone=None, password=None, **kwargs):
         user = None

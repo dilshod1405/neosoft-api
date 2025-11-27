@@ -1,7 +1,7 @@
-from .base import *
+from ..base import *
 from celery.schedules import crontab
 
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ["edu.neosoft.uz", "mentor.neosoft.uz", "54.app.ioedge.host"]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -25,6 +25,7 @@ CORS_ALLOW_CREDENTIALS = True
 REDIS_HOST = config("REDIS_HOST", default="localhost")
 REDIS_PORT = config("REDIS_PORT", default="6379")
 REDIS_DB = config("REDIS_DB", default="0")
+REDIS_PASSWORD = config("REDIS_PASSWORD", default=None)
 REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
 
 

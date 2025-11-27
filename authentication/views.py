@@ -7,7 +7,7 @@ from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from .serializers import RegisterUserSerializer, CustomTokenObtainPairSerializer, ResendCodeSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
-from emails.auth.registration_code_email import registration_code_email
+from emails.auth.activation_code_email import activation_code_email
 from utils.get_redis import get_redis
 User = CustomUser
 
@@ -51,7 +51,7 @@ class RegisterView(generics.CreateAPIView):
 
 
         # Send activation email
-        registration_code_email.delay(user.id, language)
+        activation_code_email.delay(user.id, language)
         logger.info(f"Activation code sent to {user.email} for language {language}")
 
         return Response({

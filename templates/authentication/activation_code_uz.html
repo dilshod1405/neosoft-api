@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aktivatsiya Kodi - NeoSoft</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            color: #000000;
+        }
+        .container {
+            max-width: 620px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #e5e5e5;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .header {
+            background-color: #000000;
+            color: #ffffff;
+            text-align: center;
+            padding: 30px 20px;
+        }
+        .logo {
+            width: 120px;
+            margin-bottom: 15px;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 0.5px;
+        }
+        .content {
+            padding: 30px 25px;
+            text-align: center;
+        }
+        .content p {
+            font-size: 15px;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+        .code-box {
+            margin: 25px auto;
+            background-color: #f7f7f7;
+            border-left: 4px solid #000000;
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 6px;
+        }
+        .code {
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: #000000;
+        }
+        .footer {
+            text-align: center;
+            font-size: 13px;
+            color: #666666;
+            padding: 20px 15px;
+            border-top: 1px solid #eeeeee;
+        }
+        a {
+            color: #000000;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        a:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            <img
+                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAQACAYAAAB/HSuDAACmEmNhQlgAAKYSanV...AAAAKoAOJtxA3VybjpjMnBhOmY3ZGQyMmEwLThhMDEtNDFkMC05Njc5LTFiNTU0"
+                alt="NeoSoft Logo"
+                width="130"
+                style="display:block; margin:0 auto;"
+            >
+            <h2>NeoSoft Platformasiga Xush Kelibsiz</h2>
+        </div>
+
+
+        <div class="content">
+            <p>Hurmatli <b>{{ full_name }}</b>,</p>
+            <p>NeoSoft platformasida ro'yxatdan o'tganingiz uchun tashakkur. Quyida sizning tasdiqlash kodingiz keltirilgan:</p>
+
+            <div class="code-box">
+                <div class="code">{{ code }}</div>
+            </div>
+
+            <p>Agar siz ushbu kodni so'ramagan bo'lsangiz, xabarni e'tiborsiz qoldiring yoki biz bilan bog'laning:</p>
+            <p><a href="mailto:support@neosoft.uz">support@neosoft.uz</a></p>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2025 NeoSoft. Barcha huquqlar himoyalangan.</p>
+            <p><a href="https://edu.neosoft.uz">Veb-saytimizga tashrif buyuring</a></p>
+        </div>
+
+    </div>
+
+</body>
+</html>

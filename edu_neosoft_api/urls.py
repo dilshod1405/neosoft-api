@@ -20,11 +20,6 @@ schema_view = get_schema_view(
     permission_classes=[permissions.AllowAny],
 )
 
-logger = logging.getLogger(__name__)
-
-def debug_urls(request):
-   logger.info(f"Request path: {request.path}")
-   return include('authentication.urls')
 
 
 urlpatterns = [
@@ -38,9 +33,9 @@ urlpatterns += i18n_patterns(
     path('api/admin/', admin.site.urls),
     path('api/authentication/', include('authentication.urls')),
     path('api/mentor/', include('authentication.mentors.urls')),
-    path('api/content/', include('content.urls')),
-    path('api/payment/', include('payment.urls')),
-    prefix_default_language=False
+    # path('api/content/', include('content.urls')),
+    # path('api/payment/', include('payment.urls')),
+    prefix_default_language=True
 )
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

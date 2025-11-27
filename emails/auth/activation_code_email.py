@@ -11,7 +11,7 @@ def generate_code():
     return randint(100000, 999999)
 
 @shared_task(bind=True, max_retries=0)
-def registration_code_email(self, user_id, language='uz'):
+def activation_code_email(self, user_id, language='uz'):
     try:
         user = CustomUser.objects.get(id=user_id)
         code = generate_code()
@@ -20,12 +20,12 @@ def registration_code_email(self, user_id, language='uz'):
             language = 'uz'
 
         subject_map = {
-            'uz': 'Ro‘yxatdan o‘tish kodi',
-            'ru': 'Код регистрации',
+            'uz': 'Aktivlashtirish kodi',
+            'ru': 'Код активации',
         }
 
         subject = subject_map.get(language, 'Registration Code')
-        template_name = f'authentication/registration_code_{language}.html'
+        template_name = f'authentication/activation_code_{language}.html'
 
         context = {
             'full_name': user.full_name,
