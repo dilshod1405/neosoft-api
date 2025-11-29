@@ -21,7 +21,7 @@ docker-build:
         export TAG="$CI_COMMIT_REF_NAME"
       fi
       echo "Building image with tag: $TAG"
-    - docker buildx build --pull -t "$CI_REGISTRY_IMAGE:$TAG" --load .
+    - docker buildx build --pull -t "$CI_REGISTRY_IMAGE:$TAG" --push .
   rules:
     - if: $CI_COMMIT_BRANCH || $CI_COMMIT_TAG
       exists:

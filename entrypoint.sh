@@ -2,6 +2,8 @@
 
 set -e
 
+/app/wait_for_db.sh $DB_HOST python manage.py migrate
+
 echo "Collecting static files..."
 python manage.py collectstatic --noinput
 
