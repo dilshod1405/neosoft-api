@@ -1,0 +1,47 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  DOCKER_DRIVER: overlay2
+  POSTGRES_DB: ${DB_NAME}
+  POSTGRES_USER: ${DB_USER}
+  POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+before_script:
+  - pip install --upgrade pip
+  - pip install -r requirements.txt
+
+build:
+  stage: build
+  image: python:3.12
+  script:
+    - echo "Building Docker image..."
+    - docker build -t edu_neosoft_backend .
+
+test:
+  stage: test
+  image: python:3.12
+  services:
+    - postgres:15
+    - redis:latest
+  variables:
+    POSTGRES_DB: ${DB_NAME}
+    POSTGRES_USER: ${DB_USER}
+    POSTGRES_PASSWORD: ${DB_PASSWORD}
+    POSTGRES_HOST: postgres
+  script:
+    - python manage.py test
+
+deploy:
+  stage: deploy
+  image: docker:24
+  services:
+    - docker:dind
+  script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:latest
+  only:
+    - main
