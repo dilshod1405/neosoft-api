@@ -33,6 +33,11 @@ class CustomUserManager(BaseUserManager):
         return self.get(email__iexact=email)
 
 
+
+# ============================================================
+#                 General User for all roles
+# ============================================================
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, db_index=True)
     full_name = models.CharField(max_length=255)

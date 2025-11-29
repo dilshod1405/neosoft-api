@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import InstructorProfile, MentorProfile
+from .models import MentorProfile
+from content.mentors.models import InstructorProfile
 
 
 # ============================================================
