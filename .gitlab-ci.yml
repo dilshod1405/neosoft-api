@@ -1,47 +1,34 @@
 stages:
   - build
-  - test
-  - deploy
 
-variables:
-  DOCKER_DRIVER: overlay2
-  POSTGRES_DB: ${DB_NAME}
-  POSTGRES_USER: ${DB_USER}
-  POSTGRES_PASSWORD: ${DB_PASSWORD}
-
-before_script:
-  - pip install --upgrade pip
-  - pip install -r requirements.txt
-
-build:
+docker-build:
+  image: docker:24.0.5-cli
   stage: build
-  image: python:3.12
-  script:
-    - echo "Building Docker image..."
-    - docker build -t edu_neosoft_backend .
-
-test:
-  stage: test
-  image: python:3.12
   services:
-    - postgres:15
-    - redis:latest
+    - docker:24.0.5-dind
   variables:
-    POSTGRES_DB: ${DB_NAME}
-    POSTGRES_USER: ${DB_USER}
-    POSTGRES_PASSWORD: ${DB_PASSWORD}
-    POSTGRES_HOST: postgres
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_TLS_CERTDIR: ""
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - |
+      CONTEXT_NAME="edu-neosoft-backend"
+      if docker context inspect $CONTEXT_NAME &> /dev/null; then
+        echo "Context '$CONTEXT_NAME' already exists."
+      else
+        echo "Creating context '$CONTEXT_NAME'..."
+        docker context create $CONTEXT_NAME
+        docker buildx create --name builderx --driver docker-container --use $CONTEXT_NAME
+      fi
   script:
-    - python manage.py test
-
-deploy:
-  stage: deploy
-  image: docker:24
-  services:
-    - docker:dind
-  script:
-    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE:latest .
-    - docker push $CI_REGISTRY_IMAGE:latest
-  only:
-    - main
+    - |
+      if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
+        TAG=":latest"
+      else
+        TAG=":$CI_COMMIT_REF_NAME"
+      fi
+    - docker buildx build --pull -t "$CI_REGISTRY_IMAGE$TAG" .
+    - docker buildx build --push -t "$CI_REGISTRY_IMAGE$TAG" --platform linux/amd64
+  rules:
+    - exists:
+        - Dockerfile
