@@ -29,7 +29,10 @@ EXPOSE 8000
 
 # Entrypoint script to run migrations and collectstatic
 COPY ./entrypoint.sh /app/entrypoint.sh
+COPY ./wait_for_db.sh /app/wait_for_db.sh
+
 RUN chmod +x /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh /app/wait_for_db.sh
 
 # Run entrypoint
 ENTRYPOINT ["/app/entrypoint.sh"]
