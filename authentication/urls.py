@@ -7,6 +7,7 @@ from .views import (
     ResendCodeView,
     LogoutView
 )
+from authentication.google.login import GoogleLoginView
 
 
 
@@ -23,6 +24,8 @@ urlpatterns = [
     path('token/refresh/', RefreshView.as_view(), name='token_refresh'),
 
     path('logout/', LogoutView.as_view(), name='logout'),
+
+    path("google/login/", GoogleLoginView.as_view(), name='google-login'),
 
 
 ]
