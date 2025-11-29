@@ -9,7 +9,7 @@ docker-build:
   image: docker:24.1.1-cli
   stage: build
   services:
-    - docker:24.1.1-dind
+    - docker:dind
   before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - docker buildx create --use --name builderx || echo "builderx context exists"
