@@ -6,7 +6,7 @@ variables:
   DOCKER_TLS_CERTDIR: ""
 
 docker-build:
-  image: docker:24.1.1-cli
+  image: docker:24-cli
   stage: build
   services:
     - docker:dind
