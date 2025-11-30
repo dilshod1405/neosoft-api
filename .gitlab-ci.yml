@@ -1,64 +1,35 @@
 stages:
   - build
 
-# --- Global Variables ---
-# While these variables are set globally, defining them within the job is often more robust.
-# We'll rely on the job-specific definition below.
 variables:
   DOCKER_DRIVER: overlay2
-  DOCKER_TLS_CERTDIR: ""  # Crucial for preventing "ca.pem not found" error
+  DOCKER_TLS_CERTDIR: ""
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_VERIFY: 0
 
----
-
 docker-build:
-  # The job uses the Docker client image
   image: docker:24.0.5-cli
   stage: build
-
-  # --- Job-Specific Variables (Ensuring DIND stability) ---
-  # Re-defining these here makes the job environment explicit and reliable.
-  variables:
-    DOCKER_TLS_CERTDIR: "" # Explicitly disables TLS certificate search
-    DOCKER_HOST: tcp://docker:2375 # Connects client to the dind service
-
-  # The Docker daemon running as a service container (dind)
   services:
     - name: docker:24.0.5-dind
       command: ["--storage-driver=overlay2"]
-
-  # --- Setup Script ---
   before_script:
-    # 1. Login to the GitLab Container Registry
-    - echo "Logging into GitLab Registry..."
+    # Docker registry ga login
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-
-    # 2. Setup Buildx Builder for advanced features (e.g., efficient pushing)
-    - echo "Setting up Buildx builder..."
+    # Buildx yaratish (agar mavjud bo‘lmasa)
     - docker buildx create --use --name builderx || echo "builderx context exists"
-
-  # --- Build and Push Script ---
   script:
     - |
-      # Determine the image tag based on the commit context
       if [ "$CI_COMMIT_BRANCH" = "$CI_DEFAULT_BRANCH" ]; then
         export TAG="latest"
       else
-        # Use a safe version of the branch name for the tag
-        export TAG="$(echo "$CI_COMMIT_REF_NAME" | sed 's/[^a-zA-Z0-9._-]/-/g')"
+        export TAG="$CI_COMMIT_REF_NAME"
       fi
-      
-      echo "Building and pushing image with tag: $TAG"
-      # Build, tag, and push the image in one go
+      echo "Building image with tag: $TAG"
       docker buildx build --pull -t "$CI_REGISTRY_IMAGE:$TAG" --push .
-
-  # --- Job Execution Rules ---
   rules:
-    # Run the job if there is a branch or tag and a Dockerfile exists
     - if: $CI_COMMIT_BRANCH || $CI_COMMIT_TAG
-  
-  # --- Runner Tag ---
-  # Requires a runner to be tagged with 'docker' to pick up this job
+      exists:
+        - Dockerfile
   tags:
     - docker
