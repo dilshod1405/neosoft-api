@@ -4,14 +4,19 @@ stages:
 variables:
   DOCKER_DRIVER: overlay2
   DOCKER_TLS_CERTDIR: ""
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_VERIFY: 0
 
 docker-build:
   image: docker:24.0.5-cli
   stage: build
   services:
-    - docker:24.0.5-dind
+    - name: docker:24.0.5-dind
+      command: ["--storage-driver=overlay2"]
   before_script:
+    # Docker registry ga login
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    # Buildx yaratish (agar mavjud bo‘lmasa)
     - docker buildx create --use --name builderx || echo "builderx context exists"
   script:
     - |
@@ -21,8 +26,10 @@ docker-build:
         export TAG="$CI_COMMIT_REF_NAME"
       fi
       echo "Building image with tag: $TAG"
-    - docker buildx build --pull -t "$CI_REGISTRY_IMAGE:$TAG" --push .
+      docker buildx build --pull -t "$CI_REGISTRY_IMAGE:$TAG" --push .
   rules:
     - if: $CI_COMMIT_BRANCH || $CI_COMMIT_TAG
       exists:
         - Dockerfile
+  tags:
+    - docker
