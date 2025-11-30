@@ -59,7 +59,8 @@ class CustomUserAdmin(UserAdmin):
 # =========================================================================
 
 from django.contrib import admin
-from authentication.mentors.models import MentorContract, MentorProfile, InstructorProfile
+from authentication.mentors.models import MentorContract, MentorProfile
+from content.mentors.models import InstructorProfile
 
 
 # ==========================

@@ -1,9 +1,9 @@
 from django.apps import AppConfig
 
 
-class DiscountConfig(AppConfig):
+class NotificationConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'discount'
+    name = 'notification'
 
     def ready(self):
-        import signals.discount_calculations
+        import signals.discount_notifications

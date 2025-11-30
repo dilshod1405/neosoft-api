@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.core.validators import MinValueValidator, MaxValueValidator
-from mentors.models import InstructorProfile
+from content.mentors.models import InstructorProfile
 from authentication.models import CustomUser
 from django.utils.translation import get_language
 from discount.models import Discount

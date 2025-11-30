@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'content',
     'payment',
     'discount',
+    'notification',
     'payme',
 ]
 
