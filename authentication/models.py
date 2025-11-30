@@ -57,7 +57,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     def __str__(self):
-        return self.email
+        if (self.is_mentor == True):
+            return f'Mentor: {self.email}'
+        else:
+            return f'Student: {self.full_name}'
 
     def save(self, *args, **kwargs):
         if self.email:

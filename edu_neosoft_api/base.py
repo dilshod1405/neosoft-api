@@ -24,13 +24,14 @@ INSTALLED_APPS = [
     'drf_yasg',
     'django_filters',
     'debug_toolbar',
+    "payment.apps.PaymentConfig",
+    "content.apps.ContentConfig",
+    "discount.apps.DiscountConfig",
+    "notification.apps.NotificationConfig",
+
     
     # apps
     'authentication',
-    'content',
-    'payment',
-    'discount',
-    'notification',
     'payme',
 ]
 

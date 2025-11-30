@@ -78,7 +78,6 @@ class Transaction(models.Model):
     @classmethod
     def create_from_order(cls, order, provider, transaction_id=None, amount_tiyin=None):
         if amount_tiyin is None:
-            # order.final_price MUST ALWAYS be in so'm
             amount_tiyin = order.final_price
 
         return cls.objects.create(
