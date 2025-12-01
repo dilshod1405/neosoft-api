@@ -80,7 +80,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         ip = get_client_ip(self.context.get("request"))
         ttl = 7 * 24 * 60 * 60
 
-        redis_client = get_redis()  # <-- MUHIM
+        redis_client = get_redis()
 
         redis_client.delete(f"user_session:{user.id}")
         redis_client.delete(f"ip_session:{ip}")

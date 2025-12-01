@@ -27,3 +27,8 @@ class PlatformBalanceHistorySerializer(serializers.ModelSerializer):
         model = PlatformBalanceHistory
         fields = ["amount", "description", "created_at"]
 
+
+
+class PlatformBalanceDetailSerializer(serializers.Serializer):
+    balance = PlatformBalanceSerializer()
+    history = PlatformBalanceHistorySerializer(many=True)

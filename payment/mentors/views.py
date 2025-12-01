@@ -1,24 +1,23 @@
 from rest_framework import generics
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from payment.models import Transaction
-from .serializers import MentorTransactionSerializer
+from permissions.user_permissions import IsOwner, IsMentor
+from .models import MentorBalanceHistory, MentorBalance, WithdrawRequest
 
-class MentorTransactionsAPIView(generics.ListAPIView):
-    serializer_class = MentorTransactionSerializer
-    permission_classes = [IsAuthenticated]
+class MentorBalanceDetailAPIView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated, IsOwner, IsMentor]
 
-    def get_queryset(self):
-        # Only Mentor's own transactions
-        user = self.request.user
-        qs = Transaction.objects.filter(order__course__instructor__user=user)
-        status = self.request.query_params.get("status")
-        if status:
-            qs = qs.filter(status=status.upper())
-            return qs.order_by("-created_at")
-        
-        if not getattr(user, "is_mentor", False):
-            return Transaction.objects.none()
+    def get(self, request, *args, **kwargs):
+        user = request.user
 
-        return Transaction.objects.filter(
-            order__course__instructor__user=user
-        ).order_by("-created_at")
+        balance = MentorBalance.objects.filter(mentor=user).first()
+        balance_history = MentorBalanceHistory.objects.filter(mentor=user)
+        withdraws = WithdrawRequest.objects.filter(mentor=user)
+
+        from .serializers import MentorBalanceSerializer, MentorBalanceHistorySerializer, WithdrawRequestSerializer
+
+        return Response({
+            "balance": MentorBalanceSerializer(balance).data if balance else {"balance": 0},
+            "balance_history": MentorBalanceHistorySerializer(balance_history, many=True).data,
+            "withdraw_requests": WithdrawRequestSerializer(withdraws, many=True).data,
+        })

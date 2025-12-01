@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from payment.models import Transaction
+from .models import MentorBalanceHistory, MentorBalance, WithdrawRequest
 
 class MentorTransactionSerializer(serializers.ModelSerializer):
     student = serializers.CharField(source="order.student.full_name", read_only=True)
@@ -28,3 +29,21 @@ class MentorTransactionSerializer(serializers.ModelSerializer):
 
     def get_platform_share(self, obj):
         return f"{obj.platform_share:,} so'm" if obj.platform_share else None
+
+
+class MentorBalanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MentorBalance
+        fields = ["balance", "updated_at"]
+
+
+class MentorBalanceHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MentorBalanceHistory
+        fields = ["amount", "description", "created_at"]
+
+
+class WithdrawRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WithdrawRequest
+        fields = ["amount", "status", "created_at", "resolved_at", "note"]

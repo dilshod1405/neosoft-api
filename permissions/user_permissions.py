@@ -14,8 +14,8 @@ class IsStudent(BasePermission):
 
 class IsMentor(BasePermission):
     def has_permission(self, request, view):
-        return request.user.is_authenticated and hasattr(request.user, 'instructor_profile') and request.user.instructor_profile
-    
+        return request.user.is_authenticated and getattr(request.user, "is_mentor", False)
+
 
 
 
@@ -41,3 +41,18 @@ class IsEnrolledStudent(BasePermission):
             ).exists()
         except Lesson.DoesNotExist:
             return False
+        
+
+
+
+
+class IsOwner(BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        owner_fields = ["user", "owner", "mentor", "student", "created_by"]
+
+        for field in owner_fields:
+            if hasattr(obj, field):
+                return getattr(obj, field) == request.user
+        
+        return False

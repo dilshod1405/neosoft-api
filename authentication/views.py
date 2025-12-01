@@ -25,12 +25,10 @@ class RegisterView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
 
-        # Detect language
         language = 'uz'
         if '/ru/' in request.path:
             language = 'ru'
 
-        # is_verified user oldin ro‘yxatdan o‘tganmi?
         existing_verified = User.objects.filter(
             email=request.data.get("email"),
             is_verified=True
