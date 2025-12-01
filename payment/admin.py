@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Order, Transaction
+from .models import Order, Transaction, PlatformBalance, PlatformBalanceHistory
 from payment.mentors.models import MentorBalance, MentorBalanceHistory, WithdrawRequest
 
 # ------------------ Transaction Form ------------------
@@ -105,20 +105,60 @@ class TransactionAdmin(admin.ModelAdmin):
 
 
 
+# ---------------- MentorBalanceAdmin ----------------
 @admin.register(MentorBalance)
 class MentorBalanceAdmin(admin.ModelAdmin):
-    list_display = ("mentor", "balance", "updated_at", "id")
+    list_display = ("mentor", "formatted_balance", "updated_at", "id")
     search_fields = ("mentor__username", "mentor__email")
 
+    def formatted_balance(self, obj):
+        return f"{obj.balance:,} so'm"
+    formatted_balance.short_description = "Balance"
 
+# ---------------- MentorBalanceHistoryAdmin ----------------
 @admin.register(MentorBalanceHistory)
 class MentorBalanceHistoryAdmin(admin.ModelAdmin):
-    list_display = ("mentor", "amount", "description", "created_at", "id")
+    list_display = ("mentor", "formatted_amount", "description", "created_at", "id")
     search_fields = ("mentor__username",)
 
+    def formatted_amount(self, obj):
+        return f"{obj.amount:,} so'm"
+    formatted_amount.short_description = "Amount"
 
+# ---------------- WithdrawRequestAdmin ----------------
 @admin.register(WithdrawRequest)
 class WithdrawRequestAdmin(admin.ModelAdmin):
-    list_display = ("mentor", "amount", "status", "created_at", "resolved_at", "id")
+    list_display = ("mentor", "formatted_amount", "status", "created_at", "resolved_at", "id")
     list_filter = ("status",)
     search_fields = ("mentor__email",)
+
+    def formatted_amount(self, obj):
+        return f"{obj.amount:,} so'm"
+    formatted_amount.short_description = "Amount"
+
+
+
+
+
+# ---------------- Platform Balance ----------------
+@admin.register(PlatformBalance)
+class PlatformBalanceAdmin(admin.ModelAdmin):
+    list_display = ("balance_display", "updated_at", "id")
+    readonly_fields = ("balance_display", "updated_at")
+    search_fields = ()
+
+    def balance_display(self, obj):
+        return f"{obj.balance:,} so'm"
+    balance_display.short_description = "Balance"
+
+# ---------------- Platform Balance History ----------------
+@admin.register(PlatformBalanceHistory)
+class PlatformBalanceHistoryAdmin(admin.ModelAdmin):
+    list_display = ("amount_display", "description", "created_at", "id")
+    readonly_fields = ("amount_display", "description", "created_at")
+    search_fields = ("description",)
+    list_filter = ("created_at",)
+
+    def amount_display(self, obj):
+        return f"{obj.amount:,} so'm"
+    amount_display.short_description = "Amount"

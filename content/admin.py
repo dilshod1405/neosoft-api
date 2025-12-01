@@ -64,7 +64,7 @@ class CourseAdmin(admin.ModelAdmin):
     list_display = (
         "title_uz", "category", "instructor", 
         "price", "discount_price", "level", 
-        "is_published", "is_bestseller", "created_at"
+        "is_published", "is_bestseller", "created_at", "id"
     )
     list_filter = (
         "category", "level", "is_published",

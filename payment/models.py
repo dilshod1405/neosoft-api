@@ -101,3 +101,23 @@ class Transaction(models.Model):
         if self.order.status != new_order_status:
             self.order.status = new_order_status
             self.order.save(update_fields=["status"])
+
+
+
+
+
+class PlatformBalance(models.Model):
+    balance = models.IntegerField(default=0)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Platform Balance: {self.balance:,} so'm"
+
+
+class PlatformBalanceHistory(models.Model):
+    amount = models.IntegerField()
+    description = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.amount:,} so'm - {self.description}"
