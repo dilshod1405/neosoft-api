@@ -45,16 +45,15 @@
             font-weight: bold;
         }
 
-        /* ——— STAMP + DIRECTOR — идеальное положение ——— */
         .signature-block {
-            margin-top: 100px;           /* пространство после реквизитов */
+            margin-top: 100px;
             page-break-inside: avoid;
         }
 
         .signature-container {
             display: flex;
             justify-content: flex-end;
-            height: 100px;              /* поднимаем блок чуть выше */
+            height: 100px;
             align-items: flex-end;
         }
 
@@ -86,7 +85,6 @@
 
     {{ contract_body|safe }}
 
-    <!-- Stamp + director — теперь идеально (ни слишком низко, ни слишком высоко) -->
     <div class="signature-block">
         <div class="signature-container">
             <div class="stamp-box">
