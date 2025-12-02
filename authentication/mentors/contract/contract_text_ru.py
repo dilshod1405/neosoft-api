@@ -78,7 +78,7 @@ CONTRACT_TEXT_RU = """
 4.1. Доход от продажи каждого курса распределяется следующим образом:
 </p>
 
-<div style="display: block; page-break-before: always;"></div>
+<div style="page-break-before: avoid;"></div>
 
 <table class="cost-table">
 <tr>

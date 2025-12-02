@@ -2,88 +2,100 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-
     <style>
         @page {
             size: A4;
-            margin: 22mm;
+            margin: 20mm 25mm 25mm 25mm;
         }
 
         body {
-            font-family: "Times New Roman", "DejaVu Serif", serif;
+            font-family: "Times New Roman", serif;
             font-size: 13px;
-            line-height: 1.35;
+            line-height: 1.4;
             color: #000;
         }
 
-        h1 {
-            font-size: 22px;
-            text-align: center;
-            margin-bottom: 4mm;
-            font-weight: bold;
-        }
+        h1 { font-size: 22px; text-align: center; font-weight: bold; margin: 10px 0; }
+        h2 { font-size: 16px; font-weight: bold; margin: 16px 0 8px 0; }
+        h3 { font-size: 14px; font-weight: bold; margin: 10px 0 4px 0; }
+        p  { margin: 5px 0; text-align: justify; }
 
-        h2 {
-            font-size: 16px;
-            margin-top: 10px;
-            margin-bottom: 4px;
-            font-weight: bold;
-        }
-
-        h3 {
-            font-size: 15px;
-            margin-top: 8px;
-            margin-bottom: 4px;
-            font-weight: bold;
-        }
-
-        p {
-            margin: 2px 0;
-            text-align: justify;
-        }
-
-        .header-line {
-            text-align: center;
-            margin-bottom: 12px;
-            font-size: 14px;
-        }
-
-        /* Rekvizitlar flex */
         .rekvizit-flex {
             display: flex;
             justify-content: space-between;
-            gap: 20px;
-            margin-top: 8px;
+            gap: 30px;
+            margin-top: 40px;
         }
 
-        .rekv-block {
-            width: 50%;
-        }
+        .rekv-block { width: 48%; }
 
-        /* Jadval */
         table.cost-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 6px 0;
+            margin: 12px 0;
+            font-size: 12.5px;
         }
-
-        table.cost-table th, table.cost-table td {
-            border: 0.5px solid #000;
-            padding: 4px 6px;
-            font-size: 13px;
+        table.cost-table th,
+        table.cost-table td {
+            border: 0.5pt solid black;
+            padding: 6px 8px;
         }
-
         table.cost-table th {
-            background: #f2f2f2;
+            background-color: #f0f0f0;
             font-weight: bold;
-            text-align: left;
+        }
+
+        /* ——— STAMP + DIRECTOR — идеальное положение ——— */
+        .signature-block {
+            margin-top: 100px;           /* пространство после реквизитов */
+            page-break-inside: avoid;
+        }
+
+        .signature-container {
+            display: flex;
+            justify-content: flex-end;
+            height: 100px;              /* поднимаем блок чуть выше */
+            align-items: flex-end;
+        }
+
+        .stamp-box {
+            text-align: center;
+            width: 220px;
+        }
+
+        .stamp-box img {
+            width: 170px;
+            height: auto;
+            opacity: 0.88;
+            margin-bottom: 10px;
+        }
+
+        .director-title {
+            font-size: 13.5px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .director-name {
+            font-size: 14px;
+            margin: 4px 0 0 0;
         }
     </style>
 </head>
-
 <body>
 
-{{ contract_body|safe }}
+    {{ contract_body|safe }}
+
+    <!-- Stamp + director — теперь идеально (ни слишком низко, ни слишком высоко) -->
+    <div class="signature-block">
+        <div class="signature-container">
+            <div class="stamp-box">
+                <img src="{{ stamp_url }}" alt="Möhür">
+                <div class="director-title">Direktor</div>
+                <div class="director-name">D.A. Normurodov</div>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>

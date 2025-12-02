@@ -3,6 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.utils import timezone
 from django.template import Template, Context
+from django.templatetags.static import static
+from django.conf import settings
 import os
 
 from .contract_text_uz import CONTRACT_TEXT_UZ
@@ -49,7 +51,6 @@ class GenerateContractView(APIView):
         lang = request.data.get("lang", "uz")
         template_text = CONTRACT_TEXT_UZ if lang == "uz" else CONTRACT_TEXT_RU
 
-
         rendered_body = Template(template_text).render(Context({
             "contract_number": f"MN-{contract.pk}",
             "contract_date": timezone.now().strftime("%d.%m.%Y"),
@@ -62,7 +63,18 @@ class GenerateContractView(APIView):
             "mentor_card": mentor.card_number,
         }))
 
-        pdf_path = generate_contract_pdf({"contract_body": rendered_body})
+
+        stamp_path = os.path.join(settings.STATIC_ROOT, "images", "stamp_blue.png")
+
+        if not os.path.exists(stamp_path):
+            stamp_path = os.path.join(settings.BASE_DIR, "static", "images", "stamp_blue.png")
+
+        stamp_url = f"file://{os.path.abspath(stamp_path)}"
+
+        pdf_path = generate_contract_pdf({
+            "contract_body": rendered_body,
+            "stamp_url": stamp_url,
+        })
 
         contract.pdf_file.name = "contracts/" + os.path.basename(pdf_path)
         contract.generated_at = timezone.now()
@@ -70,7 +82,7 @@ class GenerateContractView(APIView):
 
         return Response({
             "success": True,
-            "message": "Contract pdf generated successfully",
+            "message": "Contract PDF generated successfully",
             "pdf_url": request.build_absolute_uri("/media/" + contract.pdf_file.name),
             "contract_id": contract.pk
         })
