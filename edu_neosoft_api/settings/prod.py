@@ -2,7 +2,7 @@ from ..base import *
 from celery.schedules import crontab
 
 DEBUG = True
-ALLOWED_HOSTS = ["edu.neosoft.uz", "mentor.neosoft.uz", "54.app.ioedge.host"]
+ALLOWED_HOSTS = ["edu.neosoft.uz", "mentor.neosoft.uz", "54.app.ioedge.host", "127.0.0.1", "0.0.0.0"]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://edu.neosoft.uz",
@@ -59,6 +59,17 @@ PAYME_ACCOUNT_MODEL = "payment.models.Transaction"
 PAYME_ACCOUNT_FIELD = "id"
 PAYME_AMOUNT_FIELD = "amount"
 PAYME_ONE_TIME_PAYMENT = True
+
+
+CLICK_SERVICE_ID = config("CLICK_SERVICE_ID")
+CLICK_MERCHANT_ID = config("CLICK_MERCHANT_ID")
+CLICK_SECRET_KEY = config("CLICK_SECRET_KEY")
+
+CLICK_ACCOUNT_MODEL = "payment.models.Transaction"
+CLICK_ACCOUNT_FIELD = "id"            # transaction ni click prepare orqali topish uchun
+CLICK_AMOUNT_FIELD = "amount"
+CLICK_ONE_TIME_PAYMENT = True
+CLICK_DISABLE_ADMIN = False
 
 
 RESEND_API_KEY = config('RESEND_API_KEY')

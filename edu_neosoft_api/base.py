@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     # apps
     'authentication',
     'payme',
+    'click_up',
 ]
 
 MIDDLEWARE = [
@@ -203,20 +204,33 @@ JAZZMIN_UI_TWEAKS = {
 }
 
 
-
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {'level': 'DEBUG', 'class': 'logging.FileHandler', 'filename': BASE_DIR / 'debug.log'},
-        'console': {'level': 'DEBUG', 'class': 'logging.StreamHandler'},
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "simple": {
+            "format": "[{levelname}] {asctime} {name}: {message}",
+            "style": "{",
+        },
     },
-    'loggers': {
-        '': {'handlers': ['file', 'console'], 'level': 'DEBUG', 'propagate': True},
-        'django': {'handlers': ['console'], 'level': 'INFO', 'propagate': False},
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+    },
+    "loggers": {
+        "": {  # root logger
+            "handlers": ["console"],
+            "level": "INFO",
+        },
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
     },
 }
-
 
 
 

@@ -55,7 +55,6 @@ class Order(models.Model):
 class Transaction(models.Model):
     provider = models.CharField(max_length=50)  # payme, click, uzum, paynet
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="transactions")
-    # store amounts as integer tiyin (1 so'm = 100 tiyin)
     amount = models.IntegerField()
     status = models.CharField(max_length=20, default="PENDING")
     transaction_id = models.CharField(max_length=50, null=True, blank=True)
