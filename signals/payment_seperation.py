@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from payment.models import Transaction, PlatformBalance, PlatformBalanceHistory
-from payment.mentors.models import MentorBalance, MentorBalanceHistory
+from payment.mentors.models import MentorBalance, MentorBalanceHistory, WithdrawRequest
 from decimal import Decimal
 
 
@@ -58,3 +58,20 @@ def process_transaction_signal(sender, instance: Transaction, created, **kwargs)
             amount=-platform_share,
             description=f"{course.title_uz} qaytarildi, platforma ulushi minus qilindi"
         )
+
+
+
+
+
+@receiver(post_save, sender=WithdrawRequest)
+def update_mentor_balance(sender, instance, created, **kwargs):
+    if not created and instance.status == "APPROVED":
+        balance, _ = MentorBalance.objects.get_or_create(mentor=instance.mentor)
+        if balance.balance >= instance.amount:
+            balance.balance -= instance.amount
+            balance.save()
+            MentorBalanceHistory.objects.create(
+                mentor=instance.mentor,
+                amount=-instance.amount,
+                description=f"WithdrawRequest #{instance.id} tasdiqlandi"
+            )

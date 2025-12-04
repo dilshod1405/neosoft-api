@@ -10,7 +10,7 @@ User = settings.AUTH_USER_MODEL
 
 
 # ==================================================================
-#                       ORDERS, CREATED BY USERS
+#                     ORDERS, CREATED BY USERS
 # ==================================================================
 
 class Order(models.Model):

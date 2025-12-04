@@ -19,10 +19,12 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'full_name', 'password', 'phone']
+        fields = ['email', 'first_name', 'last_name', 'middle_name', 'password', 'phone']
         extra_kwargs = {
             'email': {'required': True},
-            'full_name': {'required': True},
+            'first_name': {'required': True},
+            'last_name': {'required': True},
+            'middle_name': {'required': True},
             'password': {'write_only': True},
         }
 
@@ -95,7 +97,9 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                 "id": user.id,
                 "email": user.email,
                 "phone": user.phone,
-                "full_name": user.full_name,
+                "first_name": user.first_name,
+                "last_name": user.first_name,
+                "middle_name": user.first_name,
                 "is_mentor": user.is_mentor,
             },
         }

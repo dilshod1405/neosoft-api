@@ -25,12 +25,13 @@ class GenerateContractView(APIView):
         try:
             mentor = user.mentor_profile
         except MentorProfile.DoesNotExist:
-            return Response({
-                "success": False,
-                "message": "Mentor profili topilmadi."
-            }, status=400)
+            return Response({"success": False, "message": "Mentor profili topilmadi."}, status=400)
 
         contract, created = MentorContract.objects.get_or_create(mentor=mentor)
+
+        if created or not contract.document_id:
+            contract.document_id = f"MN-{contract.pk}"
+            contract.save()
 
         required = {
             "passport_number": mentor.passport_number,
@@ -52,9 +53,9 @@ class GenerateContractView(APIView):
         template_text = CONTRACT_TEXT_UZ if lang == "uz" else CONTRACT_TEXT_RU
 
         rendered_body = Template(template_text).render(Context({
-            "contract_number": f"MN-{contract.pk}",
+            "contract_number": contract.document_id,
             "contract_date": timezone.now().strftime("%d.%m.%Y"),
-            "mentor_fio": user.full_name,
+            "mentor_fio": f"{user.first_name} {user.last_name}",
             "mentor_passport": mentor.passport_number,
             "passport_issued_by": mentor.passport_issued_by,
             "passport_issue_date": mentor.passport_issue_date,
@@ -63,12 +64,9 @@ class GenerateContractView(APIView):
             "mentor_card": mentor.card_number,
         }))
 
-
         stamp_path = os.path.join(settings.STATIC_ROOT, "images", "stamp_blue.png")
-
         if not os.path.exists(stamp_path):
             stamp_path = os.path.join(settings.BASE_DIR, "static", "images", "stamp_blue.png")
-
         stamp_url = f"file://{os.path.abspath(stamp_path)}"
 
         pdf_path = generate_contract_pdf({
@@ -83,6 +81,7 @@ class GenerateContractView(APIView):
         return Response({
             "success": True,
             "message": "Contract PDF generated successfully",
-            "pdf_url": request.build_absolute_uri("/media/" + contract.pdf_file.name),
-            "contract_id": contract.pk
+            "contract_id": contract.pk,
+            "contract_number": contract.document_id,
+            "pdf_url": request.build_absolute_uri("/media/" + contract.pdf_file.name)
         })

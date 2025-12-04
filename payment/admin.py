@@ -3,6 +3,13 @@ from django.contrib import admin
 from django.utils.html import format_html
 from .models import Order, Transaction, PlatformBalance, PlatformBalanceHistory
 from payment.mentors.models import MentorBalance, MentorBalanceHistory, WithdrawRequest
+from django.conf import settings
+from payment.multicard.payout import mentor_create_payout
+from django.contrib import messages
+from authentication.mentors.models import MentorProfile
+
+
+
 
 # ------------------ Transaction Form ------------------
 class TransactionAdminForm(forms.ModelForm):
@@ -18,6 +25,10 @@ class TransactionAdminForm(forms.ModelForm):
         if order and (amount is None):
             cleaned_data['amount'] = order.final_price
         return cleaned_data
+    
+
+
+
 
 # ------------------ Transaction Inline ------------------
 class TransactionInline(admin.TabularInline):
@@ -39,6 +50,10 @@ class TransactionInline(admin.TabularInline):
     def created_at_display(self, obj):
         return obj.created_at.strftime("%Y-%m-%d %H:%M:%S") if obj.created_at else "-"
     created_at_display.short_description = "Created At"
+
+
+
+
 
 # ------------------ Order Admin ------------------
 @admin.register(Order)
@@ -63,6 +78,10 @@ class OrderAdmin(admin.ModelAdmin):
     def get_discount(self, obj):
         return obj.discount.name if obj.discount else "-"
     get_discount.short_description = "Discount"
+
+
+
+
 
 # ------------------ Transaction Admin ------------------
 @admin.register(Transaction)
@@ -115,6 +134,10 @@ class MentorBalanceAdmin(admin.ModelAdmin):
         return f"{obj.balance:,} so'm"
     formatted_balance.short_description = "Balance"
 
+
+
+
+
 # ---------------- MentorBalanceHistoryAdmin ----------------
 @admin.register(MentorBalanceHistory)
 class MentorBalanceHistoryAdmin(admin.ModelAdmin):
@@ -125,16 +148,48 @@ class MentorBalanceHistoryAdmin(admin.ModelAdmin):
         return f"{obj.amount:,} so'm"
     formatted_amount.short_description = "Amount"
 
+
+
+
 # ---------------- WithdrawRequestAdmin ----------------
 @admin.register(WithdrawRequest)
 class WithdrawRequestAdmin(admin.ModelAdmin):
-    list_display = ("mentor", "formatted_amount", "status", "created_at", "resolved_at", "id")
-    list_filter = ("status",)
-    search_fields = ("mentor__email",)
+    list_display = ("id", "mentor", "amount", "status", "created_at")
+    readonly_fields = ("multicard_transaction_id", "multicard_uuid")
+    actions = ["approve_withdraw_requests"]
 
-    def formatted_amount(self, obj):
-        return f"{obj.amount:,} so'm"
-    formatted_amount.short_description = "Amount"
+    def approve_withdraw_requests(self, request, queryset):
+        for withdraw in queryset.filter(status="PENDING"):
+            try:
+                mentor_profile = withdraw.mentor.mentor_profile
+            except MentorProfile.DoesNotExist:
+                self.message_user(request, f"{withdraw.mentor.get_full_name()} uchun mentor profile topilmadi", level=messages.ERROR)
+                continue
+
+            try:
+                res = mentor_create_payout(mentor_profile, withdraw.amount, withdraw.id)
+                if not res.get("success"):
+                    error_msg = res.get("error", {}).get("details", "Unknown error")
+                    self.message_user(request, f"{withdraw.mentor.get_full_name()} to‘lov muvaffaqiyatsiz: {error_msg}", level=messages.ERROR)
+                    continue
+
+                data = res.get("data", res.get("confirmed", {}).get("data", {}))
+
+                withdraw.status = "APPROVED"
+                withdraw.multicard_transaction_id = data.get("id")
+                withdraw.multicard_uuid = data.get("uuid")
+                withdraw.save()
+
+                self.message_user(request, f"{withdraw.mentor.get_full_name()} yechib olish muvaffaqiyatli", level=messages.SUCCESS)
+
+            except Exception as e:
+                self.message_user(request, f"{withdraw.mentor.get_full_name()} to‘lov xato: {str(e)}", level=messages.ERROR)
+
+    approve_withdraw_requests.short_description = "Approve selected Withdraw Requests"
+
+
+
+
 
 
 
@@ -150,6 +205,10 @@ class PlatformBalanceAdmin(admin.ModelAdmin):
     def balance_display(self, obj):
         return f"{obj.balance:,} so'm"
     balance_display.short_description = "Balance"
+
+
+
+
 
 # ---------------- Platform Balance History ----------------
 @admin.register(PlatformBalanceHistory)

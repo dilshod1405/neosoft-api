@@ -154,13 +154,15 @@ class ActivationView(generics.CreateAPIView):
 
                 return Response(
                     {
-                        "message": f"Account activated successfully. Welcome, {user.full_name}!",
+                        "message": f"Account activated successfully. Welcome, {user.last_name} {user.first_name} {user.middle_name} !",
                         "access": access,
                         "refresh": str(refresh),
                         "user": {
                             "id": user.id,
                             "email": user.email,
-                            "full_name": user.full_name,
+                            "first_name": user.first_name,
+                            "last_name": user.last_name,
+                            "middle_name": user.middle_name,
                             "photo": user.photo.url if user.photo else None,
                             "is_mentor": user.is_mentor,
                             "is_verified": user.is_verified,

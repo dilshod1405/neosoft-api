@@ -17,13 +17,15 @@ class MentorProfile(models.Model):
 
     passport_issued_by = models.CharField(max_length=255, blank=True)
     passport_issue_date = models.DateField(null=True, blank=True)
+    passport_expiry_date = models.DateField(null=True, blank=True)
     address = models.CharField(max_length=255, blank=True)
     card_number = models.CharField(max_length=20, blank=True)
-
+    pinfl = models.CharField(max_length=14, blank=True, null=True)
+    dob = models.DateField(null=True, blank=True, verbose_name='Birth Date')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Mentor Secret Profile: {self.user.full_name}"
+        return f"Mentor: {self.user.first_name} {self.user.last_name}"
 
 
     def update_courses(self):
@@ -57,5 +59,5 @@ class MentorContract(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Contract for {self.mentor.user.full_name}"
+        return f"Contract for {self.mentor.user.first_name} {self.mentor.user.last_name}"
 

@@ -43,4 +43,4 @@ class InstructorProfile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Instructor: {self.user.full_name}"
+        return f"Instructor: {self.user.first_name} {self.user.last_name}"

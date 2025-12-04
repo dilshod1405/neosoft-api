@@ -12,15 +12,15 @@ from .models import CustomUser
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     ordering = ["-date_joined"]
-    list_display = ["email", "full_name", "phone", "is_staff", "is_superuser", "is_verified", "is_mentor", "date_joined", "id"]
+    list_display = ["email", "first_name", "last_name", "middle_name", "phone", "is_staff", "is_superuser", "is_verified", "is_mentor", "date_joined", "id"]
     list_filter = ["is_staff", "is_superuser", "is_verified", "is_active"]
-    search_fields = ["email", "full_name", "phone"]
+    search_fields = ["email", "first_name", "last_name", "middle_name", "phone"]
     
     readonly_fields = ["date_joined"]
 
     fieldsets = (
         (_("Asosiy ma'lumotlar"), {
-            "fields": ("email", "full_name", "photo", "phone", "password")
+            "fields": ("email", "first_name", "last_name", "middle_name", "photo", "phone", "password")
         }),
         (_("Statuslar"), {
             "fields": ("is_active", "is_staff", "is_superuser", "is_verified", "is_mentor")
@@ -36,11 +36,11 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (_("Yangi foydalanuvchi qo'shish"), {
             "classes": ("wide",),
-            "fields": ("email", "full_name", "phone", "password1", "password2", "is_staff", "is_superuser", "is_verified"),
+            "fields": ("email", "first_name", "last_name", "middle_name", "phone", "password1", "password2", "is_staff", "is_superuser", "is_verified"),
         }),
     )
 
-    list_display_links = ["email", "full_name"]
+    list_display_links = ["email", "first_name"]
     list_editable = []
     list_per_page = 25  
 
@@ -94,14 +94,20 @@ class MentorContractInline(admin.StackedInline):
 @admin.register(MentorProfile)
 class MentorProfileAdmin(admin.ModelAdmin):
     list_display = [
-        "user",
+        "user__first_name",
+        "user__last_name",
+        "user__middle_name",
         "passport_number",
         "address",
+        "dob",
+        "pinfl",
+        "passport_expiry_date",
         "card_number",
         "created_at",
+        "id"
     ]
 
-    search_fields = ["user__full_name", "user__email", "passport_number", "card_number"]
+    search_fields = ["user__first_name", "user__last_name", "user__middle_name", "user__email", "passport_number", "card_number"]
     list_filter = ["created_at"]
 
     readonly_fields = ["created_at"]
@@ -109,17 +115,20 @@ class MentorProfileAdmin(admin.ModelAdmin):
     inlines = [MentorContractInline]
 
     fieldsets = (
-        ("MENTOR PERSONAL DATA", {
+        ("Mentor personal data", {
             "fields": (
                 "user",
                 "passport_number",
                 "passport_issued_by",
                 "passport_issue_date",
+                "passport_expiry_date",
+                "dob",
+                "pinfl",
                 "address",
                 "card_number",
             )
         }),
-        ("SYSTEM INFORMATION", {
+        ("System information", {
             "fields": ("created_at",),
         }),
     )
@@ -139,10 +148,14 @@ class MentorContractAdmin(admin.ModelAdmin):
         "sent_at",
         "signed_at",
         "created_at",
+        "pdf_file",
+        "id"
     ]
 
     search_fields = [
-        "mentor__user__full_name",
+        "mentor__user__first_name",
+        "mentor__user__last_name",
+        "mentor__user__middle_name",
         "mentor__passport_number",
         "document_id",
     ]
@@ -152,7 +165,7 @@ class MentorContractAdmin(admin.ModelAdmin):
     readonly_fields = ["created_at", "sent_at", "signed_at"]
 
     fieldsets = (
-        ("CONTRACT DATA", {
+        ("Contract data", {
             "fields": (
                 "mentor",
                 "pdf_file",
@@ -161,7 +174,7 @@ class MentorContractAdmin(admin.ModelAdmin):
                 "status",
             )
         }),
-        ("TIMESTAMPS", {
+        ("Time stamps", {
             "fields": ("sent_at", "signed_at", "created_at")
         }),
     )
@@ -179,13 +192,13 @@ class InstructorProfileAdmin(admin.ModelAdmin):
         "created_at",
     ]
 
-    search_fields = ["user__full_name", "user__email", "expertise"]
+    search_fields = ["user__first_name", "user__last_name", "user__middle_name", "user__email", "expertise"]
     list_filter = ["created_at"]
 
     readonly_fields = ["created_at"]
 
     fieldsets = (
-        ("INSTRUCTOR INFORMATION", {
+        ("Instructor information", {
             "fields": (
                 "user",
                 "bio_uz",
@@ -196,7 +209,7 @@ class InstructorProfileAdmin(admin.ModelAdmin):
                 "profile_picture",
             )
         }),
-        ("SYSTEM INFORMATION", {
+        ("System information", {
             "fields": ("created_at",),
         }),
     )

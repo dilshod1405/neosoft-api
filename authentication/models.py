@@ -40,7 +40,9 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, db_index=True)
-    full_name = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    middle_name = models.CharField(max_length=100, blank=True, null=True)
     photo = models.ImageField(upload_to='users/', blank=True, null=True)
     phone = models.CharField(max_length=13, blank=True, null=True, validators=[validate_uzbek_phone])
 
@@ -60,7 +62,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         if (self.is_mentor == True):
             return f'Mentor: {self.email}'
         else:
-            return f'Student: {self.full_name}'
+            return f'Student: {self.first_name} {self.last_name} {self.middle_name}'
 
     def save(self, *args, **kwargs):
         if self.email:
@@ -71,7 +73,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return (self.email,)
 
     def get_full_name(self):
-        return self.full_name
+        return f"{self.first_name} {self.last_name}"
 
     def get_short_name(self):
-        return self.full_name
+        return f'{self.first_name} {self.last_name}'

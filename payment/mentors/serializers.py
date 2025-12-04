@@ -46,4 +46,15 @@ class MentorBalanceHistorySerializer(serializers.ModelSerializer):
 class WithdrawRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = WithdrawRequest
-        fields = ["amount", "status", "created_at", "resolved_at", "note"]
+        fields = [
+            "id",
+            "mentor",
+            "amount",
+            "status",
+            "created_at",
+            "resolved_at",
+            "note",
+            "multicard_transaction_id",
+            "multicard_uuid",
+        ]
+        read_only_fields = ["status", "multicard_transaction_id", "multicard_uuid", "resolved_at"]

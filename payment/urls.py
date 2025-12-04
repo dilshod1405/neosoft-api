@@ -11,6 +11,7 @@ from payment.uzum.confirm_transaction_webhook import UzumConfirmView
 from payment.uzum.reverse_transaction_webhook import UzumReverseView
 from payment.uzum.status_transaction_webhook import UzumStatusView
 from payment.uzum.create_order_transaction import CreateOrderTransactionUzumAPIView
+from payment.manager.views import WithdrawRequestListView, ApproveWithdrawRequestView
 
 urlpatterns = [
 
@@ -37,5 +38,11 @@ urlpatterns = [
 
     #------------------- Mentor API -----------------------#
     path("mentor/balance/", MentorBalanceDetailAPIView.as_view(), name="mentor-balance-transactions"),
+
+
+
+    #------------------- MANAGER API -----------------------#
+    path("admin/list-withdraw-requests/", WithdrawRequestListView.as_view(), name="withdraw-request-list"),
+    path("admin/withdraw-requests/<int:pk>/approve/", ApproveWithdrawRequestView.as_view(), name="withdraw-request-approve"),
 
 ]

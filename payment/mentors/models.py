@@ -35,11 +35,15 @@ class WithdrawRequest(models.Model):
     )
 
     mentor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="withdraw_requests")
-    amount = models.IntegerField()  # so'm
+    amount = models.IntegerField()
     status = models.CharField(max_length=20, choices=STATUS, default="PENDING")
     created_at = models.DateTimeField(auto_now_add=True)
     resolved_at = models.DateTimeField(null=True, blank=True)
     note = models.TextField(blank=True, null=True)
 
+    multicard_transaction_id = models.CharField(max_length=100, null=True, blank=True)
+    multicard_uuid = models.CharField(max_length=100, null=True, blank=True)
+
     def __str__(self):
         return f"{self.mentor} | {self.amount} so'm | {self.status}"
+
