@@ -1,9 +1,12 @@
+import os
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .models import MentorProfile
+from .models import MentorProfile, MentorContract
 from .serializers import InstructorProfileSerializer, MentorSecretProfileSerializer
 from content.mentors.models import InstructorProfile
+from django.http import FileResponse, Http404
+from django.conf import settings
 
 
 
@@ -44,3 +47,38 @@ class MentorApplyView(APIView):
             "instructor_errors": instr_ser.errors,
             "secret_errors": secret_ser.errors,
         }, status=400)
+
+
+
+
+class ContractDownloadView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+
+        if not user.is_mentor:
+            return Response({"detail": "Siz mentor emassiz"}, status=403)
+
+        try:
+            contract = user.mentor_profile.contract
+        except MentorContract.DoesNotExist:
+            raise Http404("Shartnoma topilmadi")
+
+        if not contract.pdf_file or not contract.pdf_file.name:
+            raise Http404("PDF fayl yuklanmagan")
+
+        file_path = os.path.join(settings.PRIVATE_CONTRACT_ROOT, contract.pdf_file.name)
+
+        if not os.path.exists(file_path):
+            raise Http404("PDF fayl mavjud emas")
+
+        nice_filename = f"Shartnoma_{contract.mentor.user.get_full_name()}.pdf"
+
+        response = FileResponse(
+            open(file_path, "rb"),
+            as_attachment=True,
+            filename=nice_filename
+        )
+        response["Content-Type"] = "application/pdf"
+        return response

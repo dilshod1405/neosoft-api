@@ -1,6 +1,9 @@
+import os
+
 from pathlib import Path
 from datetime import timedelta
 from decouple import config
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -113,6 +116,10 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
+
+PRIVATE_CONTRACT_ROOT = os.path.join(BASE_DIR, "private/contracts")
+
+PRIVATE_CONTRACT_URL = "/media/"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

@@ -3,14 +3,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.utils import timezone
 from django.template import Template, Context
-from django.templatetags.static import static
 from django.conf import settings
 import os
 
-from .contract_text_uz import CONTRACT_TEXT_UZ
-from .contract_text_ru import CONTRACT_TEXT_RU
 from authentication.mentors.models import MentorContract, MentorProfile
 from utils.generator_contract_pdf import generate_contract_pdf
+from .send_contract_sms_code import send_contract_sms
+from .contract_text_uz import CONTRACT_TEXT_UZ
+from .contract_text_ru import CONTRACT_TEXT_RU
 
 
 class GenerateContractView(APIView):
@@ -28,6 +28,16 @@ class GenerateContractView(APIView):
             return Response({"success": False, "message": "Mentor profili topilmadi."}, status=400)
 
         contract, created = MentorContract.objects.get_or_create(mentor=mentor)
+
+        if contract.is_signed:
+            short_url = request.build_absolute_uri("/api/mentor/contract/download/")
+            return Response({
+                "success": True,
+                "message": "Shartnoma allaqachon imzolangan.",
+                "contract_id": contract.pk,
+                "contract_number": contract.document_id,
+                "short_url": short_url
+            })
 
         if created or not contract.document_id:
             contract.document_id = f"MN-{contract.pk}"
@@ -49,39 +59,52 @@ class GenerateContractView(APIView):
                 "missing_fields": missing
             }, status=400)
 
-        lang = request.data.get("lang", "uz")
-        template_text = CONTRACT_TEXT_UZ if lang == "uz" else CONTRACT_TEXT_RU
+        if created or not contract.pdf_file:
+            lang = request.data.get("lang", "uz")
+            template_text = CONTRACT_TEXT_UZ if lang == "uz" else CONTRACT_TEXT_RU
 
-        rendered_body = Template(template_text).render(Context({
-            "contract_number": contract.document_id,
-            "contract_date": timezone.now().strftime("%d.%m.%Y"),
-            "mentor_fio": f"{user.first_name} {user.last_name}",
-            "mentor_passport": mentor.passport_number,
-            "passport_issued_by": mentor.passport_issued_by,
-            "passport_issue_date": mentor.passport_issue_date,
-            "mentor_address": mentor.address,
-            "mentor_phone": user.phone,
-            "mentor_card": mentor.card_number,
-        }))
+            rendered_body = Template(template_text).render(Context({
+                "contract_number": contract.document_id,
+                "contract_date": timezone.now().strftime("%d.%m.%Y"),
+                "mentor_fio": f"{user.first_name} {user.last_name}",
+                "mentor_passport": mentor.passport_number,
+                "passport_issued_by": mentor.passport_issued_by,
+                "passport_issue_date": mentor.passport_issue_date,
+                "mentor_address": mentor.address,
+                "mentor_phone": user.phone,
+                "mentor_card": mentor.card_number,
+            }))
 
-        stamp_path = os.path.join(settings.STATIC_ROOT, "images", "stamp_blue.png")
-        if not os.path.exists(stamp_path):
-            stamp_path = os.path.join(settings.BASE_DIR, "static", "images", "stamp_blue.png")
-        stamp_url = f"file://{os.path.abspath(stamp_path)}"
+            stamp_path = os.path.join(settings.STATIC_ROOT, "images", "stamp_blue.png")
+            if not os.path.exists(stamp_path):
+                stamp_path = os.path.join(settings.BASE_DIR, "static", "images", "stamp_blue.png")
 
-        pdf_path = generate_contract_pdf({
-            "contract_body": rendered_body,
-            "stamp_url": stamp_url,
-        })
+            pdf_path = generate_contract_pdf({
+                "contract_body": rendered_body,
+                "stamp_url": f"file://{os.path.abspath(stamp_path)}",
+            })
 
-        contract.pdf_file.name = "contracts/" + os.path.basename(pdf_path)
-        contract.generated_at = timezone.now()
+            private_root = settings.PRIVATE_CONTRACT_ROOT
+            os.makedirs(private_root, exist_ok=True)
+
+            final_path = os.path.join(private_root, os.path.basename(pdf_path))
+            os.rename(pdf_path, final_path)
+
+            contract.pdf_file = os.path.basename(final_path)
+            contract.generated_at = timezone.now()
+            contract.is_signed = False
+
+        short_url = request.build_absolute_uri("/api/mentor/contract/download/")
+        contract.short_url = short_url
+        contract.sent_at = timezone.now()
         contract.save()
+
+        send_contract_sms(mentor.id, user.phone)
 
         return Response({
             "success": True,
-            "message": "Contract PDF generated successfully",
+            "message": "Contract PDF tayyorlandi va SMS yuborildi.",
             "contract_id": contract.pk,
             "contract_number": contract.document_id,
-            "pdf_url": request.build_absolute_uri("/media/" + contract.pdf_file.name)
+            "short_url": short_url
         })

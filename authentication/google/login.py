@@ -8,7 +8,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
 
 class GoogleLoginView(APIView):
-    permission_classes = [AllowAny]  # <- anonymous foydalanuvchilar uchun
+    permission_classes = [AllowAny]
 
     def post(self, request):
         token = request.data.get("id_token")

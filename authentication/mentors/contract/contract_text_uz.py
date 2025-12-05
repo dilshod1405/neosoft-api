@@ -174,7 +174,7 @@ Bu Buyurtmachiga xizmat narxi shakllanishini to‘liq tushunish uchun taqdim eti
 <h2 style="text-align:center;">7. Elektron imzo va huquqiy kuch</h2>
 
 <p>
-7.1. TrustMe.uz orqali Face ID + SMS-kod bilan imzolangan shartnoma, qo‘l bilan imzolangan shartnoma bilan teng huquqiy kuchga ega.
+7.1. SMS-kod bilan imzolangan shartnoma, qo‘l bilan imzolangan shartnoma bilan teng huquqiy kuchga ega.
 </p>
 
 <p>

@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
 from .models import CustomUser
+from django.utils.html import format_html
+from django.urls import reverse
 
 
 
@@ -144,11 +146,11 @@ class MentorContractAdmin(admin.ModelAdmin):
         "mentor",
         "document_id",
         "status",
-        "short_url",
         "sent_at",
+        "is_signed",
         "signed_at",
         "created_at",
-        "pdf_file",
+        "download_link",   # <= pdf_file o'rniga
         "id"
     ]
 
@@ -160,18 +162,19 @@ class MentorContractAdmin(admin.ModelAdmin):
         "document_id",
     ]
 
-    list_filter = ["status", "sent_at", "signed_at", "created_at"]
+    list_filter = ["status", "sent_at", "signed_at", "created_at", "is_signed"]
 
-    readonly_fields = ["created_at", "sent_at", "signed_at"]
+    readonly_fields = ["created_at", "sent_at", "signed_at", "download_link"]
 
     fieldsets = (
         ("Contract data", {
             "fields": (
                 "mentor",
-                "pdf_file",
+                "download_link",
                 "document_id",
                 "short_url",
                 "status",
+                "is_signed"
             )
         }),
         ("Time stamps", {
@@ -179,6 +182,19 @@ class MentorContractAdmin(admin.ModelAdmin):
         }),
     )
 
+    def download_link(self, obj):
+        if not obj.pdf_file:
+            return "❌ Fayl yo'q"
+
+        url = reverse("admin-download-contract", args=[obj.pk])
+
+        return format_html(
+            '<a class="button" href="{}" target="_blank">📄 Shartnomani yuklash</a>',
+            url
+        )
+
+
+    download_link.short_description = "Contract File"
 
 # ==========================
 #     INSTRUCTOR ADMIN

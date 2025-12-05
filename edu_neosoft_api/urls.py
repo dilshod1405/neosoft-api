@@ -7,6 +7,7 @@ from rest_framework import permissions
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
+from django.views.static import serve
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -32,6 +33,7 @@ urlpatterns += i18n_patterns(
     path('api/i18n/', include('django.conf.urls.i18n')),
     path('api/admin/', admin.site.urls),
     path('api/authentication/', include('authentication.urls')),
+    path('api/authentication/manager/', include('authentication.manager.urls')),
     path('api/mentor/', include('authentication.mentors.urls')),
     # path('api/content/', include('content.urls')),
     path('api/payment/', include('payment.urls')),
@@ -40,6 +42,11 @@ urlpatterns += i18n_patterns(
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+urlpatterns += [
+    path("media/<path:path>", serve, {"document_root": settings.PRIVATE_CONTRACT_ROOT}),
+]
 
 if settings.DEBUG:
        import debug_toolbar

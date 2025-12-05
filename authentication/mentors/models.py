@@ -1,5 +1,7 @@
 from django.db import models
 from authentication.models import CustomUser
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
 
 
 # ============================================================
@@ -40,6 +42,12 @@ class MentorProfile(models.Model):
 #                  Mentor Contract Info
 # ============================================================
 
+
+private_contract_storage = FileSystemStorage(
+    location=settings.PRIVATE_CONTRACT_ROOT,
+    base_url=settings.PRIVATE_CONTRACT_URL,
+)
+
 class MentorContract(models.Model):
     mentor = models.OneToOneField(
         MentorProfile,
@@ -47,13 +55,14 @@ class MentorContract(models.Model):
         related_name="contract"
     )
 
-    pdf_file = models.FileField(upload_to="contracts/", null=True, blank=True)
+    pdf_file = models.FileField(null=True, blank=True, upload_to="", storage=private_contract_storage)
 
     document_id = models.CharField(max_length=64, null=True, blank=True)
     short_url = models.CharField(max_length=255, null=True, blank=True)
     status = models.IntegerField(default=0)
 
     sent_at = models.DateTimeField(null=True, blank=True)
+    is_signed = models.BooleanField(default=False)
     signed_at = models.DateTimeField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
