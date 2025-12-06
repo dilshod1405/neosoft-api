@@ -87,7 +87,7 @@ class CourseAdmin(admin.ModelAdmin):
 class LessonAdmin(admin.ModelAdmin):
     list_display = (
         "title_uz", "course", "order", "weight",
-        "status", "vdocipher_status", "is_preview"
+        "status", "vdocipher_status", "is_preview", "id"
     )
     list_filter = ("status", "vdocipher_status", "is_preview", "course")
     search_fields = ("title_uz", "title_ru")
@@ -103,11 +103,14 @@ class LessonAdmin(admin.ModelAdmin):
 
 @admin.register(Quiz)
 class QuizAdmin(admin.ModelAdmin):
-    list_display = ("title_uz", "lesson", "passing_score")
-    search_fields = ("title_uz", "title_ru")
+    list_display = ("title_uz", "lesson", "passing_score", "id")
+    readonly_fields = ("title_uz", "title_ru")
+
+    search_fields = ("lesson__title_uz", "lesson__title_ru")
     list_filter = ("passing_score", "lesson")
     inlines = [QuestionInline]
     autocomplete_fields = ("lesson",)
+
 
 
 
@@ -117,7 +120,7 @@ class QuizAdmin(admin.ModelAdmin):
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ("text_uz_short", "quiz", "order")
+    list_display = ("text_uz_short", "quiz", "order", "id")
     search_fields = ("text_uz", "text_ru")
     list_filter = ("quiz",)
     inlines = [AnswerInline]
@@ -135,7 +138,7 @@ class QuestionAdmin(admin.ModelAdmin):
 
 @admin.register(Answer)
 class AnswerAdmin(admin.ModelAdmin):
-    list_display = ("text_uz", "question", "is_correct")
+    list_display = ("text_uz", "question", "is_correct", "id")
     search_fields = ("text_uz", "text_ru")
     list_filter = ("is_correct", "question")
     autocomplete_fields = ("question",)
@@ -148,7 +151,7 @@ class AnswerAdmin(admin.ModelAdmin):
 
 @admin.register(Resource)
 class ResourceAdmin(admin.ModelAdmin):
-    list_display = ("title", "lesson", "file_type", "created_at")
+    list_display = ("title", "lesson", "file_type", "created_at", "id")
     search_fields = ("title",)
     list_filter = ("file_type", "lesson")
     autocomplete_fields = ("lesson",)

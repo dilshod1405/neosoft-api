@@ -171,12 +171,19 @@ class Lesson(models.Model):
 
 class Quiz(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='quizzes')
-    title_uz = models.CharField(max_length=200)
-    title_ru = models.CharField(max_length=200)
     passing_score = models.PositiveIntegerField(default=70, validators=[MaxValueValidator(100)])
 
+    @property
+    def title_uz(self):
+        return f"{self.lesson.title_uz} uchun test"
+
+    @property
+    def title_ru(self):
+        return f"Тест к уроку {self.lesson.title_ru}"
+
     def __str__(self):
-        return f"{self.title_uz} (Lesson: {self.lesson.title_uz})"
+        return self.title_uz
+
     
 
 

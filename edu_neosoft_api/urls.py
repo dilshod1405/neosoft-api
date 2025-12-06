@@ -35,7 +35,7 @@ urlpatterns += i18n_patterns(
     path('api/authentication/', include('authentication.urls')),
     path('api/authentication/manager/', include('authentication.manager.urls')),
     path('api/mentor/', include('authentication.mentors.urls')),
-    # path('api/content/', include('content.urls')),
+    path('api/content/', include('content.urls')),
     path('api/payment/', include('payment.urls')),
     prefix_default_language=False
 )
