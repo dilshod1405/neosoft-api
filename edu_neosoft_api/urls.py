@@ -37,7 +37,7 @@ urlpatterns += i18n_patterns(
     path('api/mentor/', include('authentication.mentors.urls')),
     # path('api/content/', include('content.urls')),
     path('api/payment/', include('payment.urls')),
-    prefix_default_language=True
+    prefix_default_language=False
 )
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from utils.get_redis import get_redis
 from django.utils import timezone
+from payment.mentors.models import MentorBalance
 
 
 class VerifyContractSMSView(APIView):
@@ -39,6 +40,8 @@ class VerifyContractSMSView(APIView):
         contract.signed_at = timezone.now()
         contract.status = 1
         contract.save()
+
+        MentorBalance.objects.get_or_create(mentor=request.user)
 
         return Response({
             "success": True,

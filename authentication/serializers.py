@@ -4,8 +4,12 @@ from .models import CustomUser
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from utils.get_redis import get_redis
 from utils.get_client_ip import get_client_ip
+from rest_framework_simplejwt.tokens import RefreshToken
 
 User = CustomUser
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 
@@ -48,41 +52,64 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 #                  USER LOGIN SERIALIZER
 # ============================================================
 
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    email = serializers.EmailField(required=False)
-    phone = serializers.CharField(required=False)
+class CustomLoginSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=False, allow_blank=True)
+    phone = serializers.CharField(required=False, allow_blank=True)
+    password = serializers.CharField()
 
     def validate(self, attrs):
-        email = attrs.get('email')
-        phone = attrs.get('phone')
-        password = attrs.get('password')
+        email = attrs.get("email")
+        phone = attrs.get("phone")
+        password = attrs.get("password")
 
+        if not email and not phone:
+            raise serializers.ValidationError({"detail": "Email yoki telefon kiriting."})
+
+        # Userni topish
         user = None
         if email:
-            try:
-                user = CustomUser.objects.get(email=email)
-            except CustomUser.DoesNotExist:
-                pass
+            user = CustomUser.objects.filter(email=email.lower().strip()).first()
         if not user and phone:
-            try:
-                user = CustomUser.objects.get(phone=phone)
-            except CustomUser.DoesNotExist:
-                pass
+            user = CustomUser.objects.filter(phone=phone).first()
 
-        if not user or not user.check_password(password):
-            raise serializers.ValidationError("Invalid credentials.")
+        if not user:
+            raise serializers.ValidationError({"detail": "Foydalanuvchi topilmadi."})
+
+        if not user.check_password(password):
+            raise serializers.ValidationError({"detail": "Parol noto'g'ri."})
 
         if not user.is_verified:
-            raise serializers.ValidationError("Account is not verified.")
+            raise serializers.ValidationError({"detail": "Akkaunt tasdiqlanmagan."})
 
-        refresh = self.get_token(user)
+        request = self.context.get("request")
+        ip = get_client_ip(request)
+
+        
+        try:
+            if ip.startswith("127.") or ip.startswith("10.") or ip.startswith("192.168.") or ip.startswith("172."):
+                logger.warning(f"LOCAL IP detected ({ip}) — skipping GeoIP check")
+            else:
+                from django.contrib.gis.geoip2 import GeoIP2
+                gi = GeoIP2()
+                country = gi.country(ip)["country_code"]
+                print("COUNTRY:", country, flush=True)
+                logger.warning(f"COUNTRY: {country}")
+                if country != "UZ":
+                    raise serializers.ValidationError({"detail": "O'zbekistondan tashqarida login qilish mumkin emas."})
+
+        except Exception as e:
+            logger.error(f"GEOIP ERROR: {e}")
+            print("GEOIP ERROR:", e, flush=True)
+
+
+
+        refresh = RefreshToken.for_user(user)
         access = str(refresh.access_token)
         jti = refresh["jti"]
 
-        ip = get_client_ip(self.context.get("request"))
-        ttl = 7 * 24 * 60 * 60
-
         redis_client = get_redis()
+
+        ttl = 7 * 24 * 60 * 60  # 7 kun
 
         redis_client.delete(f"user_session:{user.id}")
         redis_client.delete(f"ip_session:{ip}")
@@ -98,11 +125,14 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                 "email": user.email,
                 "phone": user.phone,
                 "first_name": user.first_name,
-                "last_name": user.first_name,
-                "middle_name": user.first_name,
+                "last_name": user.last_name,
+                "middle_name": user.middle_name,
                 "is_mentor": user.is_mentor,
             },
         }
+
+
+
 
 
 

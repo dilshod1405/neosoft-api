@@ -203,12 +203,19 @@ class MentorContractAdmin(admin.ModelAdmin):
 @admin.register(InstructorProfile)
 class InstructorProfileAdmin(admin.ModelAdmin):
     list_display = [
-        "user",
+        "get_user_full_name",
         "expertise",
         "created_at",
     ]
 
-    search_fields = ["user__first_name", "user__last_name", "user__middle_name", "user__email", "expertise"]
+    search_fields = [
+        "mentor__user__first_name",
+        "mentor__user__last_name",
+        "mentor__user__middle_name",
+        "mentor__user__email",
+        "expertise",
+    ]
+
     list_filter = ["created_at"]
 
     readonly_fields = ["created_at"]
@@ -216,7 +223,7 @@ class InstructorProfileAdmin(admin.ModelAdmin):
     fieldsets = (
         ("Instructor information", {
             "fields": (
-                "user",
+                "mentor",
                 "bio_uz",
                 "bio_ru",
                 "expertise",
@@ -229,3 +236,9 @@ class InstructorProfileAdmin(admin.ModelAdmin):
             "fields": ("created_at",),
         }),
     )
+
+    def get_user_full_name(self, obj):
+        return f"{obj.mentor.user.first_name} {obj.mentor.user.last_name}"
+
+    get_user_full_name.short_description = "Instructor"
+

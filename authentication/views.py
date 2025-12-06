@@ -4,12 +4,15 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
-from .serializers import RegisterUserSerializer, CustomTokenObtainPairSerializer, ResendCodeSerializer
+from .serializers import RegisterUserSerializer, CustomLoginSerializer, ResendCodeSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
 from emails.auth.activation_code_email import activation_code_email
 from utils.get_redis import get_redis
 User = CustomUser
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 
@@ -65,10 +68,16 @@ class RegisterView(generics.CreateAPIView):
 #                  USER LOGIN VIEW
 # ============================================================
 
-class LoginView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
+class LoginView(APIView):
     permission_classes = [AllowAny]
 
+    def post(self, request):
+        serializer = CustomLoginSerializer(
+            data=request.data,
+            context={"request": request}
+        )
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.validated_data)
 
 
 
@@ -89,17 +98,22 @@ class RefreshView(TokenRefreshView):
                 user_id = token_obj["user_id"]
 
                 ip = request.META.get("REMOTE_ADDR")
-                session = get_redis.get(f"user_session:{user_id}")
+                session = get_redis().get(f"user_session:{user_id}")
+                print("=== REFRESH DEBUG ===")
+                print("REFRESH JTI:", jti)
+                print("REDIS:", get_redis().get(f"user_session:{user_id}"))
+                print("IP:", ip)
+
                 if session:
-                    old_jti, old_ip = session.decode().split(":")
+                    old_jti, old_ip = session.split(":")
                     if old_ip != ip or old_jti != jti:
                         response.data = {"detail": "Session expired — new login detected."}
                         response.status_code = 401
                         return super().finalize_response(request, response, *args, **kwargs)
 
                     ttl = 7 * 24 * 60 * 60
-                    get_redis.setex(f"user_session:{user_id}", ttl, f"{jti}:{ip}")
-                    get_redis.setex(f"ip_session:{ip}", ttl, f"{user_id}:{jti}")
+                    get_redis().setex(f"user_session:{user_id}", ttl, f"{jti}:{ip}")
+                    get_redis().setex(f"ip_session:{ip}", ttl, f"{user_id}:{jti}")
 
         return super().finalize_response(request, response, *args, **kwargs)
     
@@ -114,11 +128,11 @@ class RefreshView(TokenRefreshView):
 
 
 def get_stored_code(user_id: int) -> str | None:
-    code = get_redis.get(f"activation_code:{user_id}")
+    code = get_redis().get(f"activation_code:{user_id}")
     return code if code else None
 
 def clear_stored_code(user_id: int) -> None:
-    get_redis.delete(f"activation_code:{user_id}")
+    get_redis().delete(f"activation_code:{user_id}")
 
 
 class ActivationView(generics.CreateAPIView):
@@ -211,7 +225,7 @@ class ResendCodeView(generics.CreateAPIView):
 
             clear_stored_code(user.id)
 
-            registration_code_email.delay(user.id, language)
+            activation_code_email.delay(user.id, language)
 
             logger.info(f"New activation code sent to {user.email} ({language})")
 
@@ -250,7 +264,7 @@ class LogoutView(APIView):
         user = request.user
         ip = request.META.get("REMOTE_ADDR")
 
-        get_redis.delete(f"user_session:{user.id}")
-        get_redis.delete(f"ip_session:{ip}")
+        get_redis().delete(f"user_session:{user.id}")
+        get_redis().delete(f"ip_session:{ip}")
 
         return Response({"detail": "Logged out"}, status=200)

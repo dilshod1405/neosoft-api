@@ -28,7 +28,7 @@ def activation_code_email(self, user_id, language='uz'):
         template_name = f'authentication/activation_code_{language}.html'
 
         context = {
-            'full_name': user.full_name,
+            'first_name': user.first_name,
             'code': code,
         }
 

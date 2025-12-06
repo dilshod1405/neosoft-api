@@ -1,9 +1,11 @@
 import os
 from rest_framework.views import APIView
+from rest_framework import viewsets, decorators
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from permissions.user_permissions import IsMentor, IsOwner
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .models import MentorProfile, MentorContract
-from .serializers import InstructorProfileSerializer, MentorSecretProfileSerializer
+from .serializers import InstructorProfileSerializer, MentorSecretProfileSerializer, MentorFullProfileSerializer
 from content.mentors.models import InstructorProfile
 from django.http import FileResponse, Http404
 from django.conf import settings
@@ -23,36 +25,84 @@ class MentorApplyView(APIView):
         if user.is_mentor:
             return Response({"detail": "Siz allaqachon mentorsiz"}, status=400)
 
-        instructor, _ = InstructorProfile.objects.get_or_create(user=user)
-        instr_ser = InstructorProfileSerializer(instructor, data=request.data, partial=True)
-
         passport_number = request.data.get("passport_number")
-        if MentorProfile.objects.filter(passport_number=passport_number).exists():
+        if passport_number and MentorProfile.objects.filter(passport_number=passport_number).exists():
             return Response({
-                "detail": "Mentor profile with this passport number already exists."
+                "detail": "Bu pasport raqami bilan mentor allaqachon mavjud."
             }, status=400)
 
-        mentor = MentorProfile(user=user)
-        secret_ser = MentorSecretProfileSerializer(mentor, data=request.data, partial=True)
+        mentor_profile, _ = MentorProfile.objects.get_or_create(user=user)
 
-        if instr_ser.is_valid() and secret_ser.is_valid():
-            instr_ser.save()
-            secret_ser.save()
+        instructor_profile, _ = InstructorProfile.objects.get_or_create(mentor=mentor_profile)
+
+        instructor_ser = InstructorProfileSerializer(
+            instructor_profile,
+            data=request.data,
+            partial=True
+        )
+
+        mentor_ser = MentorSecretProfileSerializer(
+            mentor_profile,
+            data=request.data,
+            partial=True
+        )
+
+        if instructor_ser.is_valid() and mentor_ser.is_valid():
+
+            instructor_ser.save()
+            mentor_ser.save()
             user.is_mentor = True
-            user.save()
+            user.save(update_fields=["is_mentor"])
 
-            return Response({"detail": "Tabriklaymiz! Siz endi mentorsiz"}, status=201)
+            return Response({
+                "detail": "Tabriklaymiz! Siz endi mentorsiz. Ammo, balans yaratish uchun shartnomani imzolang."
+            }, status=201)
 
         return Response({
-            "instructor_errors": instr_ser.errors,
-            "secret_errors": secret_ser.errors,
+            "instructor_errors": instructor_ser.errors,
+            "secret_errors": mentor_ser.errors,
         }, status=400)
 
 
 
 
+# =====================================================================
+#                    MENTOR PROFILE CRUD VIEW
+# =====================================================================
+
+class MentorProfileViewSet(viewsets.ModelViewSet):
+    serializer_class = MentorFullProfileSerializer
+    permission_classes = [IsAuthenticated, IsMentor, IsOwner]
+
+    def get_queryset(self):
+        return MentorProfile.objects.filter(user=self.request.user)
+
+    def get_object(self):
+        return MentorProfile.objects.get(user=self.request.user)
+
+    @decorators.action(detail=False, methods=["get", "put", "patch"])
+    def me(self, request):
+        profile = self.get_object()
+
+        if request.method == "GET":
+            serializer = self.get_serializer(profile)
+            return Response(serializer.data)
+
+        serializer = self.get_serializer(profile, data=request.data, partial=(request.method == "PATCH"))
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+
+
+
+
+# =====================================================================
+#                    DOWNLOADING SECURED CONTRACT
+# =====================================================================
+
 class ContractDownloadView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsMentor]
 
     def get(self, request):
         user = request.user
