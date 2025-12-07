@@ -1,6 +1,7 @@
 # content/mentors/views.py
 
-from rest_framework import generics, permissions
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 from content.models import Course, Lesson, Quiz, Question, Answer, Resource
 from .serializers import MentorCourseSerializer, MentorLessonSerializer, MentorQuizSerializer, MentorQuestionSerializer, MentorAnswerSerializer, MentorResourceSerializer
 from permissions.user_permissions import IsMentor, MentorOwnsObject
@@ -9,6 +10,8 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.views import APIView
 from content.vdocipher.vdocipher_utils import obtain_upload_credentials, upload_poster_to_vdocipher
 from rest_framework.parsers import MultiPartParser, FormParser
+from authentication.models import CustomUser
+from django.shortcuts import get_object_or_404
 
 
 class MentorCourseListCreateView(generics.ListCreateAPIView):
@@ -214,3 +217,36 @@ class MentorResourceDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Resource.objects.select_related("lesson__course__instructor")
     serializer_class = MentorResourceSerializer
     permission_classes = [IsMentor, MentorOwnsObject]
+
+
+
+
+
+class ChatCourseStudentsView(APIView):
+    permission_classes = [IsAuthenticated, IsMentor]
+
+    def get(self, request, course_id):
+        user = request.user
+        mentor_profile = user.mentor_profile
+
+        course = get_object_or_404(Course, id=course_id)
+
+        if course.instructor.mentor != mentor_profile:
+            return Response({"error": "Access denied"}, status=403)
+
+        students = CustomUser.objects.filter(
+            enrollments__course=course,
+            enrollments__is_active=True,
+            is_mentor=False
+        ).distinct()
+
+        data = [
+            {
+                "id": s.id,
+                "full_name": s.full_name,
+                "email": s.email
+            }
+            for s in students
+        ]
+
+        return Response(data)

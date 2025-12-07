@@ -71,9 +71,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def natural_key(self):
         return (self.email,)
+    
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}".strip()
 
+
+    @property
     def get_full_name(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.first_name} {self.last_name}".strip()
 
     def get_short_name(self):
         return f'{self.first_name} {self.last_name}'

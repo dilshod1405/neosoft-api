@@ -19,6 +19,8 @@ from .views import (
 
     MentorResourceCreateView,
     MentorResourceDetailView,
+
+    ChatCourseStudentsView
 )
 
 urlpatterns = [
@@ -145,5 +147,15 @@ urlpatterns = [
         "resources/<int:pk>/",
         MentorResourceDetailView.as_view(),
         name="mentor-resource-detail"
+    ),
+
+
+    # ===============================
+    #      GET OWN STUDENTS LIST
+    # ===============================
+    path(
+        "course/<int:course_id>/students/",
+        ChatCourseStudentsView.as_view(),
+        name="chat-course-students"
     ),
 ]
