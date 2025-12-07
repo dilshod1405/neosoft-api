@@ -7,7 +7,8 @@ from permissions.user_permissions import IsMentor, MentorOwnsObject
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.views import APIView
-from content.vdocipher.vdocipher_utils import obtain_upload_credentials
+from content.vdocipher.vdocipher_utils import obtain_upload_credentials, upload_poster_to_vdocipher
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 class MentorCourseListCreateView(generics.ListCreateAPIView):
@@ -95,6 +96,34 @@ class MentorInitiateUploadView(APIView):
         })
 
 
+
+
+class MentorPosterUploadView(APIView):
+    permission_classes = [IsMentor, MentorOwnsObject]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request, lesson_id):
+        lesson = Lesson.objects.get(id=lesson_id)
+
+        if "poster" not in request.data:
+            return Response({"error": "Poster file is required"}, status=400)
+
+        file = request.data["poster"]
+
+        if not lesson.video_id:
+            return Response({"error": "Lesson has no video yet"}, status=400)
+
+        # Upload to VdoCipher
+        try:
+            result = upload_poster_to_vdocipher(lesson.video_id, file)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+
+        return Response({
+            "message": "Poster updated successfully",
+            "vdocipher_response": result
+        })
+    
 
 
 class MentorQuizCreateView(generics.CreateAPIView):

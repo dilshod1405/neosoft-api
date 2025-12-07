@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.db import models
-from content.models import Course, Lesson, Quiz, Question, Answer, Resource, Enrollment, UserProgress
+from content.models import Category, Course, Lesson, Quiz, Question, Answer, Resource, Enrollment, UserProgress
 from payment.models import Order
 from django.utils import timezone
 
@@ -220,3 +220,16 @@ class SubmitAnswerSerializer(serializers.Serializer):
             "question_id": question.id,
             "answer_id": answer.id
         }
+
+
+
+class CategoryChildSerializer(serializers.ModelSerializer):
+    children = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Category
+        fields = ["id", "name_uz", "name_ru", "slug", "children"]
+
+    def get_children(self, obj):
+        qs = obj.subcategories.all()
+        return CategoryChildSerializer(qs, many=True).data

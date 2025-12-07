@@ -146,3 +146,25 @@ def rename_video(video_id: str, new_title: str) -> dict:
     resp = requests.post(url, headers=headers, json=payload, timeout=15)
     resp.raise_for_status()
     return resp.json()
+
+
+
+# ====================================================
+#              UPLOAD POSTER FOR VIDEO
+# ====================================================
+
+def upload_poster_to_vdocipher(video_id: str, file) -> dict:
+    url = f"{API_BASE}/videos/{video_id}/files"
+
+    headers = {
+        "Authorization": f"Apisecret {API_KEY}",
+        "Accept": "application/json",
+    }
+
+    files = {
+        "file": (file.name, file, file.content_type)
+    }
+
+    response = requests.post(url, headers=headers, files=files, timeout=60)
+    response.raise_for_status()
+    return response.json()

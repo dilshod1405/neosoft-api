@@ -6,6 +6,7 @@ from .views import (
     MentorLessonCreateView,
     MentorLessonDetailView,
     MentorInitiateUploadView,
+    MentorPosterUploadView,
 
     MentorQuizCreateView,
     MentorQuizDetailView,
@@ -60,6 +61,16 @@ urlpatterns = [
         MentorInitiateUploadView.as_view(),
         name="mentor-lesson-init-upload"
     ),
+
+    # ===============================
+    #     POSTER UPLOAD → VdoCipher
+    # ===============================
+    path(
+        "lessons/<int:lesson_id>/poster/",
+        MentorPosterUploadView.as_view(),
+        name="mentor-upload-poster"
+    ),
+
 
     # ===============================
     #            QUIZ CREATE

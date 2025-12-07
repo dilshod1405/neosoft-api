@@ -19,3 +19,71 @@ class PlatformBalanceDetailAPIView(generics.RetrieveAPIView):
         }
 
     
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+from django.conf import settings
+
+from content.models import Course
+from payment.models import Order, Transaction
+from payment.serializers import OrderSerializer, TransactionSerializer
+
+from payme import Payme
+from click_up import ClickUp
+
+
+class CreateUniversalPaymentAPIView(APIView):
+    """
+    Single endpoint to create Order & Transaction,
+    and return payment link for Payme, Click, or Uzum.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        course_id = request.data.get("course_id")
+        provider = request.data.get("provider")
+
+        if provider not in ["payme", "click", "uzum"]:
+            return Response({"error": "Invalid provider"}, status=400)
+
+        course = get_object_or_404(Course, id=course_id)
+
+        order = Order.create_with_final_price(student=request.user, course=course)
+
+        transaction = Transaction.create_from_order(order, provider=provider)
+
+        payment_url = None
+
+        # PAYME
+        if provider == "payme":
+            payme = Payme(settings.PAYME_ID, settings.PAYME_KEY)
+            payment_url = payme.initializer.generate_pay_link(
+                id=str(transaction.id),
+                amount=transaction.amount,
+                return_url="https://edu.neosoft.uz/"
+            )
+
+        # CLICK
+        elif provider == "click":
+            click = ClickUp(
+                service_id=settings.CLICK_SERVICE_ID,
+                merchant_id=settings.CLICK_MERCHANT_ID,
+                secret_key=settings.CLICK_SECRET_KEY,
+            )
+            payment_url = click.initializer.generate_pay_link(
+                id=str(transaction.id),
+                amount=transaction.amount,
+                return_url="https://edu.neosoft.uz/"
+            )
+
+        # UZUM PAY
+        elif provider == "uzum":
+            payment_url = f"https://pay.uzum.com/pay/{transaction.id}"
+
+        return Response({
+            "order": OrderSerializer(order).data,
+            "transaction": TransactionSerializer(transaction).data,
+            "payment_url": payment_url
+        })

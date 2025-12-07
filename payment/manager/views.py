@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from django.conf import settings
 from payment.mentors.models import WithdrawRequest
-from payment.mentors.serializers import WithdrawRequestSerializer
+from .serializers import WithdrawRequestSerializer
 from payment.multicard.payout import mentor_create_payout
 
 
