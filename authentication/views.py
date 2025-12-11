@@ -39,7 +39,7 @@ class RegisterView(generics.CreateAPIView):
 
         if existing_verified:
             return Response({
-                "detail": "This email is already registered and verified."
+                "detail": "Bu email allaqachon ro'yhatdan o'tgan va tasdiqlangan."
             }, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = self.get_serializer(data=request.data)
@@ -56,7 +56,7 @@ class RegisterView(generics.CreateAPIView):
         logger.info(f"Activation code sent to {user.email} for language {language}")
 
         return Response({
-            'message': 'User registered successfully. Please check your email for activation code.',
+            'message': "Muvaffaqiyatli ro'yxatdan o'tdingiz. Profilni aktivlashtirish uchun elektron pochtangizga kod yubordik.",
             'user_id': user.id,
             'email': user.email
         }, status=status.HTTP_201_CREATED)
@@ -107,7 +107,7 @@ class RefreshView(TokenRefreshView):
                 if session:
                     old_jti, old_ip = session.split(":")
                     if old_ip != ip or old_jti != jti:
-                        response.data = {"detail": "Session expired — new login detected."}
+                        response.data = {"detail": "Qurilma ishi to'xtatildi — yangi qurilmadan kirish aniqlandi."}
                         response.status_code = 401
                         return super().finalize_response(request, response, *args, **kwargs)
 
@@ -168,7 +168,7 @@ class ActivationView(generics.CreateAPIView):
 
                 return Response(
                     {
-                        "message": f"Account activated successfully. Welcome, {user.last_name} {user.first_name} {user.middle_name} !",
+                        "message": f"Prfofil muvaffaqiyatli aktivlashtirildi. Xush kelibsiz, {user.last_name} {user.first_name} {user.middle_name} !",
                         "access": access,
                         "refresh": str(refresh),
                         "user": {
@@ -186,19 +186,19 @@ class ActivationView(generics.CreateAPIView):
                 )
 
             return Response(
-                {"error": "Invalid activation code."},
+                {"error": "Xato kod kiritildi."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         except CustomUser.DoesNotExist:
             return Response(
-                {"error": "User not found or already activated."},
+                {"error": "Foydalanuvchi topilmadi yoki allaqachon aktiv holatda."},
                 status=status.HTTP_404_NOT_FOUND
             )
 
         except Exception as e:
             return Response(
-                {"error": "Activation failed. Please try again."},
+                {"error": "Aktivatsiyada xatolik yuz berdi. Qayta urinib ko'ring."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
@@ -232,7 +232,7 @@ class ResendCodeView(generics.CreateAPIView):
             return Response(
                 {
                     "success": True,
-                    "message": "New activation code sent to your email."
+                    "message": "Yangi aktivlashtirish kodi elektron pochtangizga yuborildi."
                 },
                 status=status.HTTP_200_OK
             )
@@ -240,13 +240,13 @@ class ResendCodeView(generics.CreateAPIView):
         except CustomUser.DoesNotExist:
             logger.warning(f"Resend code failed: user not found or already verified — {email}")
             return Response(
-                {"error": "User not found or already activated."},
+                {"error": "Foydalanuvchi topilmadi yoki allaqachon aktivlashtirilgan."},
                 status=status.HTTP_404_NOT_FOUND
             )
         except Exception as e:
             logger.error(f"Resend activation code error: {str(e)}")
             return Response(
-                {"error": "Failed to resend code."},
+                {"error": "Kodni qayta yuborishda xatolik yuz berdi."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 

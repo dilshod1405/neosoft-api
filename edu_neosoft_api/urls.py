@@ -37,6 +37,7 @@ urlpatterns += i18n_patterns(
     path('api/mentor/', include('authentication.mentors.urls')),
     path('api/content/', include('content.urls')),
     path('api/payment/', include('payment.urls')),
+    path('api/notification/', include('notification.urls')),
     prefix_default_language=False
 )
 

@@ -2,7 +2,16 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .models import PlatformBalance, PlatformBalanceHistory
 from .serializers import PlatformBalanceDetailSerializer
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+from django.conf import settings
+from content.models import Course
+from payment.models import Order, Transaction
+from payment.serializers import OrderSerializer, TransactionSerializer
+from payme import Payme
+from click_up import ClickUp
 
 
 class PlatformBalanceDetailAPIView(generics.RetrieveAPIView):
@@ -17,21 +26,6 @@ class PlatformBalanceDetailAPIView(generics.RetrieveAPIView):
             "balance": balance,
             "history": history
         }
-
-    
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from django.shortcuts import get_object_or_404
-from django.conf import settings
-
-from content.models import Course
-from payment.models import Order, Transaction
-from payment.serializers import OrderSerializer, TransactionSerializer
-
-from payme import Payme
-from click_up import ClickUp
 
 
 class CreateUniversalPaymentAPIView(APIView):

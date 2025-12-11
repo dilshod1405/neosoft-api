@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     "payment.apps.PaymentConfig",
     "content.apps.ContentConfig",
     "discount.apps.DiscountConfig",
-    "notification.apps.NotificationConfig",
+    "notification",
 
     
     # apps
@@ -145,7 +145,7 @@ AUTH_USER_MODEL = "authentication.CustomUser"
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=3),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
     'ALGORITHM': 'HS256',

@@ -109,12 +109,12 @@ class MentorPosterUploadView(APIView):
         lesson = Lesson.objects.get(id=lesson_id)
 
         if "poster" not in request.data:
-            return Response({"error": "Poster file is required"}, status=400)
+            return Response({"error": "Poster fayl talab qilinadi !"}, status=400)
 
         file = request.data["poster"]
 
         if not lesson.video_id:
-            return Response({"error": "Lesson has no video yet"}, status=400)
+            return Response({"error": "Darsda hali video yo'q !"}, status=400)
 
         # Upload to VdoCipher
         try:
@@ -123,7 +123,7 @@ class MentorPosterUploadView(APIView):
             return Response({"error": str(e)}, status=500)
 
         return Response({
-            "message": "Poster updated successfully",
+            "message": "Poster yangilandi",
             "vdocipher_response": result
         })
     

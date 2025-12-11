@@ -55,7 +55,7 @@ class MentorApplyView(APIView):
             user.save(update_fields=["is_mentor"])
 
             return Response({
-                "detail": "Tabriklaymiz! Siz endi mentorsiz. Ammo, balans yaratish uchun shartnomani imzolang."
+                "detail": "Tabriklaymiz! Siz endi mentorsiz. Ammo, balans ochilishi uchun shartnomani imzolang."
             }, status=201)
 
         return Response({

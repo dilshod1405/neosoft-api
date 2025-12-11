@@ -34,7 +34,7 @@ class ChatCheckAccessView(APIView):
         student_id = request.GET.get("student_id")
 
         if not lesson_id or not student_id:
-            return Response({"error": "lesson_id and student_id are required"}, status=400)
+            return Response({"error": "lesson_id va student_id talab qilinadi"}, status=400)
 
         lesson = get_object_or_404(Lesson, id=lesson_id)
         course = lesson.course
@@ -49,7 +49,7 @@ class ChatCheckAccessView(APIView):
         if not is_enrolled:
             return Response({
                 "allowed": False,
-                "reason": "Student is not enrolled in this course."
+                "reason": "Student bu kursda yozilmagan."
             }, status=403)
 
         return Response({

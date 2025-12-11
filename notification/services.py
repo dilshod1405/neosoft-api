@@ -1,8 +1,11 @@
-from .models import Notification
+import json
+from utils.get_redis import get_redis
 
-def create_user_notification(user, title, message):
-    return Notification.objects.create(
-        user=user,
-        title=title,
-        message=message
-    )
+r = get_redis()
+
+
+class NotificationRealtimeService:
+    @staticmethod
+    def send_realtime(notification):
+        resp = r.xadd("notifications_stream", {"data": json.dumps(notification)})
+        return resp

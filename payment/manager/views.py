@@ -23,7 +23,7 @@ class ApproveWithdrawRequestView(generics.GenericAPIView):
         mentor_profile = withdraw.mentor.mentor_profile
 
         if withdraw.status != "PENDING":
-            return Response({"error": "Already processed"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Allaqachon amalga oshirilgan"}, status=status.HTTP_400_BAD_REQUEST)
 
         res = mentor_create_payout(mentor_profile, withdraw.amount, withdraw.id)
 
