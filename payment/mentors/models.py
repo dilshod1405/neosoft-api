@@ -10,7 +10,9 @@ class MentorBalance(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.mentor.get_full_name()} - Balance: {self.balance} so'm"
+        return f"{self.mentor.first_name} {self.mentor.last_name} - Balance: {self.balance} so'm"
+
+        
 
 
 class MentorBalanceHistory(models.Model):
