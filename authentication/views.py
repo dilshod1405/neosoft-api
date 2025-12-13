@@ -10,6 +10,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from emails.auth.activation_code_email import activation_code_email
 from utils.get_redis import get_redis
 User = CustomUser
+from i18n.util import t, get_language_from_path
 
 import logging
 logger = logging.getLogger(__name__)
@@ -21,45 +22,65 @@ logger = logging.getLogger(__name__)
 # ============================================================
 
 class RegisterView(generics.CreateAPIView):
-    queryset = User.objects.all()
     serializer_class = RegisterUserSerializer
     permission_classes = [AllowAny]
-    parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def create(self, request, *args, **kwargs):
+        language = get_language_from_path(request.path)
 
-        language = 'uz'
-        if '/ru/' in request.path:
-            language = 'ru'
+        email = request.data.get("email")
+        existing = User.objects.filter(email=email).first()
 
-        existing_verified = User.objects.filter(
-            email=request.data.get("email"),
-            is_verified=True
-        ).first()
+        if existing and existing.is_verified:
+            return Response(
+                {"detail": t("auth.already_registered", language)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        if existing_verified:
-            return Response({
-                "detail": "Bu email allaqachon ro'yhatdan o'tgan va tasdiqlangan."
-            }, status=status.HTTP_400_BAD_REQUEST)
+        if existing and not existing.is_verified:
+            errors = {}
 
+            if existing.first_name != request.data.get("first_name"):
+                errors["first_name"] = t("auth.first_name_mismatch", language)
+
+            if existing.last_name != request.data.get("last_name"):
+                errors["last_name"] = t("auth.last_name_mismatch", language)
+
+            if existing.middle_name != request.data.get("middle_name"):
+                errors["middle_name"] = t("auth.middle_name_mismatch", language)
+
+            if existing.phone != request.data.get("phone"):
+                errors["phone"] = t("auth.phone_mismatch", language)
+
+            if errors:
+                return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+            activation_code_email.delay(existing.id, language)
+
+            return Response(
+                {
+                    "message": t("auth.not_verified_resent", language),
+                    "email": existing.email,
+                },
+                status=status.HTTP_200_OK
+            )
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        validated_data = serializer.validated_data
-        validated_data['is_active'] = False
-
-        user = User.objects.create_user(**validated_data)
-
-
-        # Send activation email
+        user = User.objects.create_user(
+            **serializer.validated_data,
+            is_active=False,
+            is_verified=False,
+        )
         activation_code_email.delay(user.id, language)
-        logger.info(f"Activation code sent to {user.email} for language {language}")
+        return Response(
+            {
+                "message": "Ro'yxatdan o'tildi. Emailga kod yuborildi.",
+                "email": user.email,
+            },
+            status=status.HTTP_201_CREATED,
+        )
 
-        return Response({
-            'message': "Muvaffaqiyatli ro'yxatdan o'tdingiz. Profilni aktivlashtirish uchun elektron pochtangizga kod yubordik.",
-            'user_id': user.id,
-            'email': user.email
-        }, status=status.HTTP_201_CREATED)
 
 
 
@@ -139,37 +160,33 @@ class ActivationView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
-        language = "ru" if "/ru/" in request.path else "uz"
+        language = get_language_from_path(request.path)
 
         email = request.data.get("email")
         code = request.data.get("code")
 
         if not email or not code:
             return Response(
-                {"error": "Email and code are required."},
+                {"detail": t("common.required_fields", language)},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         try:
             user = CustomUser.objects.get(email=email, is_verified=False)
-
             stored_code = get_stored_code(user.id)
 
-            # === CODE CHECK ===
-            if stored_code and stored_code == code:
+            if stored_code == code:
                 user.is_verified = True
                 user.is_active = True
                 user.save(update_fields=["is_verified", "is_active"])
-
                 clear_stored_code(user.id)
 
                 refresh = RefreshToken.for_user(user)
-                access = str(refresh.access_token)
 
                 return Response(
                     {
-                        "message": f"Prfofil muvaffaqiyatli aktivlashtirildi. Xush kelibsiz, {user.last_name} {user.first_name} {user.middle_name} !",
-                        "access": access,
+                        "message": t("auth.activation_success", language),
+                        "access": str(refresh.access_token),
                         "refresh": str(refresh),
                         "user": {
                             "id": user.id,
@@ -181,26 +198,26 @@ class ActivationView(generics.CreateAPIView):
                             "is_mentor": user.is_mentor,
                             "is_verified": user.is_verified,
                         }
-                    },
-                    status=status.HTTP_200_OK
+                    }
                 )
 
             return Response(
-                {"error": "Xato kod kiritildi."},
+                {"detail": t("auth.activation_code_invalid", language)},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         except CustomUser.DoesNotExist:
             return Response(
-                {"error": "Foydalanuvchi topilmadi yoki allaqachon aktiv holatda."},
+                {"detail": t("auth.activation_user_not_found", language)},
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        except Exception as e:
+        except Exception:
             return Response(
-                {"error": "Aktivatsiyada xatolik yuz berdi. Qayta urinib ko'ring."},
+                {"detail": t("auth.activation_failed", language)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
 
 
 
@@ -213,7 +230,7 @@ class ResendCodeView(generics.CreateAPIView):
     serializer_class = ResendCodeSerializer
 
     def create(self, request, *args, **kwargs):
-        language = "ru" if "/ru/" in request.path else "uz"
+        language = get_language_from_path(request.path)
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -224,31 +241,25 @@ class ResendCodeView(generics.CreateAPIView):
             user = CustomUser.objects.get(email=email, is_verified=False)
 
             clear_stored_code(user.id)
-
             activation_code_email.delay(user.id, language)
 
-            logger.info(f"New activation code sent to {user.email} ({language})")
-
             return Response(
-                {
-                    "success": True,
-                    "message": "Yangi aktivlashtirish kodi elektron pochtangizga yuborildi."
-                },
+                {"message": t("auth.resend_success", language)},
                 status=status.HTTP_200_OK
             )
 
         except CustomUser.DoesNotExist:
-            logger.warning(f"Resend code failed: user not found or already verified — {email}")
             return Response(
-                {"error": "Foydalanuvchi topilmadi yoki allaqachon aktivlashtirilgan."},
+                {"detail": t("auth.resend_not_found", language)},
                 status=status.HTTP_404_NOT_FOUND
             )
-        except Exception as e:
-            logger.error(f"Resend activation code error: {str(e)}")
+
+        except Exception:
             return Response(
-                {"error": "Kodni qayta yuborishda xatolik yuz berdi."},
+                {"detail": t("auth.resend_failed", language)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
 
 
 
@@ -267,4 +278,9 @@ class LogoutView(APIView):
         get_redis().delete(f"user_session:{user.id}")
         get_redis().delete(f"ip_session:{ip}")
 
-        return Response({"detail": "Logged out"}, status=200)
+        language = get_language_from_path(request.path)
+
+        return Response(
+            {"detail": t("auth.logout_success", language)},
+            status=status.HTTP_200_OK
+        )

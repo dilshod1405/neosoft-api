@@ -38,7 +38,7 @@ urlpatterns += i18n_patterns(
     path('api/content/', include('content.urls')),
     path('api/payment/', include('payment.urls')),
     path('api/notification/', include('notification.urls')),
-    prefix_default_language=False
+    prefix_default_language=True
 )
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

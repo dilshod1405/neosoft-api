@@ -107,7 +107,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-LANGUAGES = [('uz', 'Uzbek'), ('ru', 'Russian'), ('en', 'English')]
+LANGUAGES = [('uz', 'Uzbek'), ('ru', 'Russian')]
 
 STATIC_URL = '/static/'
 

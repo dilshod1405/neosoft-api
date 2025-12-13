@@ -56,8 +56,13 @@ class LessonSerializer(serializers.ModelSerializer):
 class StudentCourseSerializer(serializers.ModelSerializer):
     is_purchased = serializers.SerializerMethodField()
     final_price = serializers.SerializerMethodField()
-    lessons = serializers.SerializerMethodField()
-    progress = serializers.SerializerMethodField()
+    discount_percent = serializers.SerializerMethodField()
+    thumbnail = serializers.SerializerMethodField()
+    lessons_count = serializers.SerializerMethodField()
+    level_display = serializers.CharField(source="get_level_display", read_only=True)
+
+    category = serializers.SerializerMethodField()
+    instructor = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
@@ -68,104 +73,69 @@ class StudentCourseSerializer(serializers.ModelSerializer):
             "slug",
             "description_uz",
             "description_ru",
-            "price",
-            "discount_price",
             "final_price",
+            "price",
+            "discount_percent",
             "level",
+            "level_display",
             "duration_hours",
             "thumbnail",
             "is_bestseller",
-            "is_published",
             "is_purchased",
-            "progress",
-            "lessons",
+            "lessons_count",
+            "category",
+            "instructor",
         ]
 
-    # -----------------------------------
-    # PURCHASE CHECK
-    # -----------------------------------
+    def get_thumbnail(self, course):
+        request = self.context.get("request")
+        if course.thumbnail and request:
+            return request.build_absolute_uri(course.thumbnail.url)
+        return None
+
+    def get_final_price(self, course):
+        return course.discount_price or course.price
+
+    def get_discount_percent(self, course):
+        if course.discount_price and course.price:
+            return int(100 - (course.discount_price / course.price) * 100)
+        return 0
+
+    def get_lessons_count(self, course):
+        return course.lessons.count()
+
     def get_is_purchased(self, course):
         user = self.context["request"].user
         if not user.is_authenticated:
             return False
-
-        if Enrollment.objects.filter(student=user, course=course, is_active=True).exists():
-            return True
-
-        if Order.objects.filter(student=user, course=course, status="PAID").exists():
-            return True
-
-        return False
-
-    # -----------------------------------
-    # FINAL PRICE
-    # -----------------------------------
-    def get_final_price(self, course):
-        return course.discount_price or course.price
-
-    # -----------------------------------
-    # LESSONS (dynamic)
-    # -----------------------------------
-    def get_lessons(self, course):
-        user = self.context["request"].user
-        is_purchased = self.get_is_purchased(course)
-
-        if is_purchased:
-            lessons = course.lessons.prefetch_related(
-                "quizzes__questions__answers",
-                "resources"
-            )
-            return LessonSerializer(lessons, many=True).data
-        else:
-            previews = course.lessons.filter(is_preview=True)
-            return LessonSerializer(previews, many=True).data
-
-    # -----------------------------------
-    # PROGRESS (full statistics)
-    # -----------------------------------
-    def get_progress(self, course):
-        user = self.context["request"].user
-        if not user.is_authenticated:
-            return None
-
-        enrollment = Enrollment.objects.filter(student=user, course=course, is_active=True).first()
-        if not enrollment:
-            return None
-
-        total_lessons = course.lessons.count()
-
-        completed_lessons = enrollment.progress.filter(completed_at__isnull=False).count()
-
-        total_weight = sum(l.weight for l in course.lessons.all())
-
-        completed_weight = sum(
-            up.lesson.weight
-            for up in enrollment.progress.filter(completed_at__isnull=False)
+        return (
+            Enrollment.objects.filter(student=user, course=course, is_active=True).exists()
+            or Order.objects.filter(student=user, course=course, status="PAID").exists()
         )
 
-        video_progress = (completed_weight / total_weight) * 100 if total_weight else 0
+    def get_category(self, course):
+        return {
+            "id": course.category.id,
+            "name_uz": course.category.name_uz,
+            "name_ru": course.category.name_ru,
+            "slug": course.category.slug,
+        }
 
-        quiz_scores = enrollment.progress.exclude(quiz_score__isnull=True)
-        quiz_avg = quiz_scores.aggregate(avg=models.Avg("quiz_score"))["avg"] or 0
-        quiz_progress = (quiz_avg / 100) * 30
+    def get_instructor(self, course):
+        instructor = course.instructor
 
-        total_questions = Question.objects.filter(quiz__lesson__course=course).count()
-        correct_answers = Answer.objects.filter(
-            is_correct=True,
-            question__quiz__lesson__course=course
-        ).count()
+        if not instructor or not instructor.mentor or not instructor.mentor.user:
+            return None
+
+        user = instructor.mentor.user
 
         return {
-            "completion_percentage": enrollment.completion_percentage,
-            "video_progress": int(video_progress),
-            "quiz_progress": int(quiz_progress),
-            "total_lessons": total_lessons,
-            "completed_lessons": completed_lessons,
-            "total_quizzes": Quiz.objects.filter(lesson__course=course).count(),
-            "total_questions": total_questions,
-            "correct_answers": correct_answers,
-            "quiz_avg_score": int(quiz_avg),
+            "id": instructor.id,
+            "full_name": user.full_name,  # yoki user.get_full_name
+            "photo": user.photo.url if user.photo else None,
         }
+
+
 
 
 

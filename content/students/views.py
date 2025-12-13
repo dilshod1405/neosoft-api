@@ -7,7 +7,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 
 class StudentCourseListView(generics.ListAPIView):
-    queryset = Course.objects.filter(is_published=True).select_related("category", "instructor")
+    queryset = (
+        Course.objects
+        .filter(is_published=True)
+        .select_related("category", "instructor")
+        .prefetch_related("lessons")
+    )
     serializer_class = StudentCourseSerializer
     permission_classes = [permissions.AllowAny]
     filter_backends = [DjangoFilterBackend]
@@ -15,6 +20,7 @@ class StudentCourseListView(generics.ListAPIView):
 
     def get_serializer_context(self):
         return {"request": self.request}
+
 
 
 class StudentCourseDetailView(generics.RetrieveAPIView):

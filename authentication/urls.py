@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .views import (
     RegisterView, 
     LoginView,
@@ -27,5 +27,5 @@ urlpatterns = [
 
     path("google/login/", GoogleLoginView.as_view(), name='google-login'),
 
-
+    path("student/", include('authentication.students.urls'))
 ]

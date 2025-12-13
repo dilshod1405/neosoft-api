@@ -34,14 +34,14 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("A user with this email already exists.")
+            raise serializers.ValidationError("Bu email platformada allaqachon mavjud")
         return value
 
     def validate(self, attrs):
         password = attrs.get('password')
         if password:
-            if len(password) < 8:
-                raise serializers.ValidationError({'password': 'Password must be at least 8 characters long.'})
+            if len(password) < 6:
+                raise serializers.ValidationError({'password': "Parol uzunligi 6 ta belgidan kam bo'lmasligi kerak"})
         return attrs
 
 
