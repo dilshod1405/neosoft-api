@@ -70,10 +70,18 @@ class OrderAdmin(admin.ModelAdmin):
     get_course.short_description = "Course"
 
     def get_mentor(self, obj):
-        if obj.course and obj.course.instructor and obj.course.instructor.user:
-            return obj.course.instructor.user.get_full_name()
+        instructor = obj.course.instructor if obj.course else None
+
+        if (
+            instructor
+            and instructor.mentor
+            and instructor.mentor.user
+        ):
+            user = instructor.mentor.user
+            return f"{user.first_name} {user.last_name}"
+
         return "-"
-    get_mentor.short_description = "Mentor"
+
 
     def get_discount(self, obj):
         return obj.discount.name if obj.discount else "-"

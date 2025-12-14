@@ -4,6 +4,8 @@ from permissions.user_permissions import IsCourseAccessible
 from filters.course_filter import CourseFilter
 from .serializers import StudentCourseSerializer, SubmitAnswerSerializer, CategoryChildSerializer
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 class StudentCourseListView(generics.ListAPIView):
@@ -17,6 +19,10 @@ class StudentCourseListView(generics.ListAPIView):
     permission_classes = [permissions.AllowAny]
     filter_backends = [DjangoFilterBackend]
     filterset_class = CourseFilter
+    authentication_classes = [
+        JWTAuthentication,
+        SessionAuthentication,
+    ]
 
     def get_serializer_context(self):
         return {"request": self.request}
@@ -28,6 +34,10 @@ class StudentCourseDetailView(generics.RetrieveAPIView):
     serializer_class = StudentCourseSerializer
     permission_classes = [permissions.AllowAny]
     lookup_field = "slug"
+    authentication_classes = [
+        JWTAuthentication,
+        SessionAuthentication,
+    ]
 
     def get_serializer_context(self):
         return {"request": self.request}

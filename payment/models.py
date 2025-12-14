@@ -33,19 +33,21 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order {self.id} - {self.student}"
+    
 
-    @classmethod
-    def create_with_final_price(cls, student, course, discount=None):
-        if discount and getattr(discount, "is_valid", lambda: False)():
-            price = Decimal(discount.calculate_discounted_price(course.price))
-        else:
-            price = Decimal(course.discount_price or course.price)
-        return cls.objects.create(
-            student=student,
-            course=course,
-            discount=discount,
-            final_price=price.quantize(Decimal("0.01")),
-        )
+    def save(self, *args, **kwargs):
+        self.final_price = self.calculate_final_price()
+        super().save(*args, **kwargs)
+
+
+    def calculate_final_price(self) -> int:
+        price = self.course.discount_price or self.course.price
+
+        if self.discount and self.discount.is_valid():
+            price = self.discount.calculate_discounted_price(price)
+
+        return int(price)
+
 
 
 # ==================================================================
@@ -53,9 +55,9 @@ class Order(models.Model):
 # ==================================================================
 
 class Transaction(models.Model):
-    provider = models.CharField(max_length=50)  # payme, click, uzum, paynet
+    provider = models.CharField(max_length=50)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="transactions")
-    amount = models.IntegerField()
+    amount = models.IntegerField(editable=False)
     status = models.CharField(max_length=20, default="PENDING")
     transaction_id = models.CharField(max_length=50, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
@@ -76,27 +78,30 @@ class Transaction(models.Model):
 
     @classmethod
     def create_from_order(cls, order, provider, transaction_id=None, amount_tiyin=None):
-        if amount_tiyin is None:
-            amount_tiyin = order.final_price
-
         return cls.objects.create(
             order=order,
             provider=provider,
             transaction_id=transaction_id,
-            amount=amount_tiyin,
+            amount=amount_tiyin or order.final_price,
             status="CREATED",
         )
 
     def save(self, *args, **kwargs):
+        if self._state.adding and self.amount is None:
+            self.amount = self.order.final_price
+
         super().save(*args, **kwargs)
+
         status_mapping = {
             "PENDING": "PENDING",
-            "SUCCESS": "PAID",
             "CREATED": "PENDING",
+            "SUCCESS": "PAID",
             "CANCELLED": "CANCELLED",
             "FAILED": "CANCELLED",
         }
+
         new_order_status = status_mapping.get(self.status, "PENDING")
+
         if self.order.status != new_order_status:
             self.order.status = new_order_status
             self.order.save(update_fields=["status"])

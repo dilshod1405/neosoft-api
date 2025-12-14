@@ -44,9 +44,18 @@ class CreateUniversalPaymentAPIView(APIView):
 
         course = get_object_or_404(Course, id=course_id)
 
-        order = Order.create_with_final_price(student=request.user, course=course)
+        # ✅ TO‘G‘RI: oddiy create
+        order = Order.objects.create(
+            student=request.user,
+            course=course
+        )
+        # ↑ final_price avtomatik save() ichida hisoblanadi
 
-        transaction = Transaction.create_from_order(order, provider=provider)
+        # ✅ Transaction ham to‘g‘ri yaratiladi
+        transaction = Transaction.create_from_order(
+            order=order,
+            provider=provider
+        )
 
         payment_url = None
 
