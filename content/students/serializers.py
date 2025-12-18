@@ -105,13 +105,28 @@ class StudentCourseSerializer(serializers.ModelSerializer):
         return course.lessons.count()
 
     def get_is_purchased(self, course):
-        user = self.context["request"].user
-        if not user.is_authenticated:
+        request = self.context.get("request")
+
+        if not request or not request.user or not request.user.is_authenticated:
             return False
+
+        user = request.user
+
         return (
-            Enrollment.objects.filter(student=user, course=course, is_active=True).exists()
-            or Order.objects.filter(student=user, course=course, status="PAID").exists()
+            Enrollment.objects.filter(
+                student=user,
+                course=course,
+                is_active=True
+            ).exists()
+            or
+            Order.objects.filter(
+                student=user,
+                course=course,
+                status="PAID"
+            ).exists()
         )
+
+
 
     def get_category(self, course):
         return {

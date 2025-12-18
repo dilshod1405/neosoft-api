@@ -66,7 +66,9 @@ class Course(models.Model):
     is_bestseller = models.BooleanField(default=False)
     folder_id = models.CharField(max_length=100, blank=True, null=True)
 
-
+    class Meta:
+        ordering = ["-created_at"]
+        
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title_uz)

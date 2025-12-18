@@ -2,7 +2,7 @@ from ..base import *
 from celery.schedules import crontab
 
 DEBUG = True
-ALLOWED_HOSTS = ["edu.neosoft.uz", "mentor.neosoft.uz", "54.app.ioedge.host", "127.0.0.1", "0.0.0.0", "192.168.0.101"]
+ALLOWED_HOSTS = ["edu.neosoft.uz", "localhost", "mentor.neosoft.uz", "54.app.ioedge.host", "127.0.0.1", "0.0.0.0", "192.168.0.101"]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://edu.neosoft.uz",
@@ -20,6 +20,12 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+ENV = config("ENV", "dev")
+
+COOKIE_SECURE = ENV == "prod"
+COOKIE_SAMESITE = "None" if ENV == "prod" else "Lax"
+
 
 
 REDIS_HOST = config("REDIS_HOST", default="localhost")

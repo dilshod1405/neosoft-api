@@ -9,8 +9,12 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
 from emails.auth.activation_code_email import activation_code_email
 from utils.get_redis import get_redis
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 User = CustomUser
 from i18n.util import t, get_language_from_path
+from rest_framework_simplejwt.exceptions import InvalidToken
+from django.conf import settings
 
 import logging
 logger = logging.getLogger(__name__)
@@ -98,7 +102,25 @@ class LoginView(APIView):
             context={"request": request}
         )
         serializer.is_valid(raise_exception=True)
-        return Response(serializer.validated_data)
+
+        data = serializer.validated_data
+        refresh = data.pop("refresh")
+
+        response = Response(data)
+
+        response.set_cookie(
+            key="refresh",
+            value=refresh,
+            httponly=True,
+            secure=settings.COOKIE_SECURE,
+            samesite=settings.COOKIE_SAMESITE,
+            path="/",
+            max_age=7 * 24 * 60 * 60,
+        )
+
+
+        return response
+
 
 
 
@@ -107,36 +129,59 @@ class LoginView(APIView):
 #                  REFRESH TOKEN VIEW
 # ============================================================
 
+@method_decorator(csrf_exempt, name="dispatch")
 class RefreshView(TokenRefreshView):
-    def finalize_response(self, request, response, *args, **kwargs):
-        if response.status_code == 200 and hasattr(response.data, "get"):
-            refresh_token = response.data.get("refresh")
-            access_token = response.data.get("access")
-            if refresh_token:
-                from rest_framework_simplejwt.tokens import RefreshToken
-                token_obj = RefreshToken(refresh_token)
-                jti = token_obj["jti"]
-                user_id = token_obj["user_id"]
 
-                ip = request.META.get("REMOTE_ADDR")
-                session = get_redis().get(f"user_session:{user_id}")
-                print("=== REFRESH DEBUG ===")
-                print("REFRESH JTI:", jti)
-                print("REDIS:", get_redis().get(f"user_session:{user_id}"))
-                print("IP:", ip)
+    def post(self, request, *args, **kwargs):
+        print("=== REFRESH DEBUG ===")
+        print("COOKIES:", request.COOKIES)
+        print("HEADERS:", dict(request.headers))
+        refresh_token = request.COOKIES.get("refresh")
 
-                if session:
-                    old_jti, old_ip = session.split(":")
-                    if old_ip != ip or old_jti != jti:
-                        response.data = {"detail": "Qurilma ishi to'xtatildi — yangi qurilmadan kirish aniqlandi."}
-                        response.status_code = 401
-                        return super().finalize_response(request, response, *args, **kwargs)
+        if not refresh_token:
+            raise InvalidToken("Refresh token not found")
 
-                    ttl = 7 * 24 * 60 * 60
-                    get_redis().setex(f"user_session:{user_id}", ttl, f"{jti}:{ip}")
-                    get_redis().setex(f"ip_session:{ip}", ttl, f"{user_id}:{jti}")
+        request._full_data = {"refresh": refresh_token}
 
-        return super().finalize_response(request, response, *args, **kwargs)
+
+        response = super().post(request, *args, **kwargs)
+
+        if response.status_code != 200:
+            return response
+
+        try:
+            token_obj = RefreshToken(refresh_token)
+            jti = token_obj["jti"]
+            user_id = token_obj["user_id"]
+        except Exception:
+            return Response(
+                {"detail": "Invalid refresh token"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        ip = request.META.get("REMOTE_ADDR")
+        redis = get_redis()
+
+        session = redis.get(f"user_session:{user_id}")
+        if session:
+            old_jti, old_ip = session.split(":")
+
+            if old_ip != ip or old_jti != jti:
+                return Response(
+                    {
+                        "detail": (
+                            "Qurilma ishi to‘xtatildi — "
+                            "yangi qurilmadan kirish aniqlandi."
+                        )
+                    },
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+
+        ttl = 7 * 24 * 60 * 60
+        redis.setex(f"user_session:{user_id}", ttl, f"{jti}:{ip}")
+        redis.setex(f"ip_session:{ip}", ttl, f"{user_id}:{jti}")
+
+        return response
     
 
 
