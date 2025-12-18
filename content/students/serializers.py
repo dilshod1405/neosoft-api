@@ -59,6 +59,7 @@ class StudentCourseSerializer(serializers.ModelSerializer):
     discount_percent = serializers.SerializerMethodField()
     thumbnail = serializers.SerializerMethodField()
     lessons_count = serializers.SerializerMethodField()
+    lessons = serializers.SerializerMethodField()
     level_display = serializers.CharField(source="get_level_display", read_only=True)
 
     category = serializers.SerializerMethodField()
@@ -83,6 +84,7 @@ class StudentCourseSerializer(serializers.ModelSerializer):
             "is_bestseller",
             "is_purchased",
             "lessons_count",
+            "lessons",
             "category",
             "instructor",
         ]
@@ -126,7 +128,28 @@ class StudentCourseSerializer(serializers.ModelSerializer):
             ).exists()
         )
 
+    def get_lessons(self, course):
+        request = self.context.get("request")
+        is_purchased = self.get_is_purchased(course)
 
+        lessons_qs = course.lessons.filter(status="approved").order_by("order")
+
+        serializer = LessonSerializer(
+            lessons_qs,
+            many=True,
+            context={"request": request},
+        )
+
+        data = serializer.data
+
+        if not is_purchased:
+            for lesson in data:
+                lesson["content_uz"] = None
+                lesson["content_ru"] = None
+                lesson["video_id"] = None
+                lesson["quizzes"] = []
+
+        return data
 
     def get_category(self, course):
         return {
@@ -146,7 +169,7 @@ class StudentCourseSerializer(serializers.ModelSerializer):
 
         return {
             "id": instructor.id,
-            "full_name": user.full_name,  # yoki user.get_full_name
+            "full_name": user.full_name,
             "photo": user.photo.url if user.photo else None,
         }
 

@@ -30,17 +30,26 @@ class StudentCourseListView(generics.ListAPIView):
 
 
 class StudentCourseDetailView(generics.RetrieveAPIView):
-    queryset = Course.objects.filter(is_published=True).select_related("category", "instructor")
+    queryset = (
+        Course.objects
+        .filter(is_published=True)
+        .select_related("category", "instructor")
+        .prefetch_related(
+            "lessons",
+            "lessons__quizzes",
+            "lessons__quizzes__questions",
+            "lessons__quizzes__questions__answers",
+            "lessons__resources",
+        )
+    )
     serializer_class = StudentCourseSerializer
     permission_classes = [permissions.AllowAny]
-    lookup_field = "slug"
-    authentication_classes = [
-        JWTAuthentication,
-        SessionAuthentication,
-    ]
+    lookup_field = "id"
 
     def get_serializer_context(self):
         return {"request": self.request}
+
+
 
 
 
