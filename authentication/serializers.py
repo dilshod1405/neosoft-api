@@ -84,22 +84,23 @@ class CustomLoginSerializer(serializers.Serializer):
         request = self.context.get("request")
         ip = get_client_ip(request)
 
-        
         try:
-            if ip.startswith("127.") or ip.startswith("10.") or ip.startswith("192.168.") or ip.startswith("172."):
+            if not ip:
+                logger.warning("IP not detected — skipping GeoIP check")
+            elif ip.startswith(("127.", "10.", "192.168.", "172.")):
                 logger.warning(f"LOCAL IP detected ({ip}) — skipping GeoIP check")
             else:
                 from django.contrib.gis.geoip2 import GeoIP2
                 gi = GeoIP2()
                 country = gi.country(ip)["country_code"]
-                print("COUNTRY:", country, flush=True)
                 logger.warning(f"COUNTRY: {country}")
                 if country != "UZ":
-                    raise serializers.ValidationError({"detail": "O'zbekistondan tashqarida login qilish mumkin emas."})
-
+                    raise serializers.ValidationError({
+                        "detail": "O'zbekistondan tashqarida login qilish mumkin emas."
+                    })
         except Exception as e:
             logger.error(f"GEOIP ERROR: {e}")
-            print("GEOIP ERROR:", e, flush=True)
+
 
 
 
@@ -108,14 +109,16 @@ class CustomLoginSerializer(serializers.Serializer):
         jti = refresh["jti"]
 
         redis_client = get_redis()
-
-        ttl = 7 * 24 * 60 * 60  # 7 kun
+        ttl = 7 * 24 * 60 * 60
 
         redis_client.delete(f"user_session:{user.id}")
-        redis_client.delete(f"ip_session:{ip}")
+
+        if ip:
+            redis_client.delete(f"ip_session:{ip}")
+            redis_client.setex(f"ip_session:{ip}", ttl, f"{user.id}:{jti}")
 
         redis_client.setex(f"user_session:{user.id}", ttl, f"{jti}:{ip}")
-        redis_client.setex(f"ip_session:{ip}", ttl, f"{user.id}:{jti}")
+
 
         return {
             "refresh": str(refresh),

@@ -2,12 +2,13 @@ from ..base import *
 from celery.schedules import crontab
 
 DEBUG = True
-ALLOWED_HOSTS = ["edu.neosoft.uz", "localhost", "mentor.neosoft.uz", "54.app.ioedge.host", "127.0.0.1", "0.0.0.0", "192.168.0.101"]
+ALLOWED_HOSTS = ["edu.neosoft.uz", "localhost", "mentor.neosoft.uz", "54.app.ioedge.host", "55.app.ioedge.host", "127.0.0.1", "0.0.0.0", "192.168.0.101"]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://edu.neosoft.uz",
     "https://mentor.neosoft.uz",
-    "https://54.app.ioedge.host"
+    "https://54.app.ioedge.host",
+    "https://55.app.ioedge.host"
 ]
 
 
@@ -16,13 +17,14 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://edu.neosoft.uz",
     "https://mentor.neosoft.uz",
-    "https://54.app.ioedge.host"
+    "https://54.app.ioedge.host",
+    "https://55.app.ioedge.host"
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
 ENV = config("ENV", "dev")
-
+COOKIE_DOMAIN = config("COOKIE_DOMAIN", default=None)
 COOKIE_SECURE = ENV == "prod"
 COOKIE_SAMESITE = "None" if ENV == "prod" else "Lax"
 

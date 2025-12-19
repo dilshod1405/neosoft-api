@@ -1,0 +1,104 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: edu_neosoft_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: edu_neosoft
+      TZ: Asia/Tashkent
+      PGTZ: Asia/Tashkent
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  redis:
+    image: redis:7-alpine
+    container_name: edu_neosoft_redis
+    restart: unless-stopped
+    networks:
+      - backend
+
+  api:
+    container_name: edu_neosoft_api
+    build: .
+    restart: unless-stopped
+    command: gunicorn edu_neosoft_api.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    env_file:
+      - .env
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    depends_on:
+      - db
+      - redis
+    networks:
+      - backend
+
+  celery_worker:
+    container_name: edu_neosoft_celery_worker
+    build: .
+    restart: unless-stopped
+    command: celery -A edu_neosoft_api worker --loglevel=info
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    networks:
+      - backend
+
+  celery_beat:
+    container_name: edu_neosoft_celery_beat
+    build: .
+    restart: unless-stopped
+    command: celery -A edu_neosoft_api beat --loglevel=info
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    networks:
+      - backend
+
+  flower:
+    container_name: edu_neosoft_flower
+    build: .
+    restart: unless-stopped
+    command: celery -A edu_neosoft_api flower --port=5555
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - celery_worker
+    networks:
+      - backend
+
+  nginx:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx_proxy_manager
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "81:81"
+    volumes:
+      - npm_data:/data
+      - npm_letsencrypt:/etc/letsencrypt
+    depends_on:
+      - api
+    networks:
+      - backend
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+  npm_data:
+  npm_letsencrypt:
+
+networks:
+  backend:
+    driver: bridge

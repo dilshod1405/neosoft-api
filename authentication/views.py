@@ -16,6 +16,9 @@ from i18n.util import t, get_language_from_path
 from rest_framework_simplejwt.exceptions import InvalidToken
 from django.conf import settings
 
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+from rest_framework_simplejwt.exceptions import TokenError
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -104,22 +107,39 @@ class LoginView(APIView):
         serializer.is_valid(raise_exception=True)
 
         data = serializer.validated_data
-        refresh = data.pop("refresh")
+
+        access = data.get("access")
+        refresh = data.get("refresh")
 
         response = Response(data)
 
+        # ✅ access cookie
+        response.set_cookie(
+            key="access",
+            value=access,
+            httponly=True,
+            secure=settings.COOKIE_SECURE,
+            samesite=settings.COOKIE_SAMESITE,
+            domain=settings.COOKIE_DOMAIN,
+            path="/",
+            max_age=15 * 60,
+        )
+
+        # ✅ refresh cookie
         response.set_cookie(
             key="refresh",
             value=refresh,
             httponly=True,
             secure=settings.COOKIE_SECURE,
             samesite=settings.COOKIE_SAMESITE,
+            domain=settings.COOKIE_DOMAIN,
             path="/",
-            max_age=7 * 24 * 60 * 60,
+            max_age=3 * 24 * 60 * 60,
         )
 
-
         return response
+
+
 
 
 
@@ -130,58 +150,42 @@ class LoginView(APIView):
 # ============================================================
 
 @method_decorator(csrf_exempt, name="dispatch")
-class RefreshView(TokenRefreshView):
+class RefreshView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         print("=== REFRESH DEBUG ===")
         print("COOKIES:", request.COOKIES)
         print("HEADERS:", dict(request.headers))
+
         refresh_token = request.COOKIES.get("refresh")
-
         if not refresh_token:
-            raise InvalidToken("Refresh token not found")
-
-        request._full_data = {"refresh": refresh_token}
-
-
-        response = super().post(request, *args, **kwargs)
-
-        if response.status_code != 200:
-            return response
-
+            return Response(
+                {"detail": "Refresh token not found"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
         try:
             token_obj = RefreshToken(refresh_token)
-            jti = token_obj["jti"]
-            user_id = token_obj["user_id"]
-        except Exception:
+        except Exception as e:
             return Response(
                 {"detail": "Invalid refresh token"},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
-        ip = request.META.get("REMOTE_ADDR")
-        redis = get_redis()
+        serializer = TokenRefreshSerializer(data={"refresh": refresh_token})
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            print("❌ Serializer error:", repr(e))
+            return Response(
+                {"detail": str(e)},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
 
-        session = redis.get(f"user_session:{user_id}")
-        if session:
-            old_jti, old_ip = session.split(":")
+        data = serializer.validated_data
 
-            if old_ip != ip or old_jti != jti:
-                return Response(
-                    {
-                        "detail": (
-                            "Qurilma ishi to‘xtatildi — "
-                            "yangi qurilmadan kirish aniqlandi."
-                        )
-                    },
-                    status=status.HTTP_401_UNAUTHORIZED,
-                )
-
-        ttl = 7 * 24 * 60 * 60
-        redis.setex(f"user_session:{user_id}", ttl, f"{jti}:{ip}")
-        redis.setex(f"ip_session:{ip}", ttl, f"{user_id}:{jti}")
-
-        return response
+        return Response(data, status=status.HTTP_200_OK)
     
 
 

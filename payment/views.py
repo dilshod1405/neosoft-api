@@ -44,14 +44,11 @@ class CreateUniversalPaymentAPIView(APIView):
 
         course = get_object_or_404(Course, id=course_id)
 
-        # ✅ TO‘G‘RI: oddiy create
         order = Order.objects.create(
             student=request.user,
             course=course
         )
-        # ↑ final_price avtomatik save() ichida hisoblanadi
 
-        # ✅ Transaction ham to‘g‘ri yaratiladi
         transaction = Transaction.create_from_order(
             order=order,
             provider=provider

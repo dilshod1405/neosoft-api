@@ -31,11 +31,11 @@ class EmailOrPhoneBackend(ModelBackend):
         # Country restriction (O'zbekiston)
         ip = get_client_ip(request)
         try:
-            from django.contrib.gis.geoip2 import GeoIP2
-            country = GeoIP2().country(ip)["country_code"]
-            if country != "UZ":
-                return None
-        except:
+            if ip:
+                from django.contrib.gis.geoip2 import GeoIP2
+                country = GeoIP2().country(ip)["country_code"]
+                if country != "UZ":
+                    return None
+        except Exception:
             pass
 
-        return user

@@ -20,13 +20,13 @@ class CustomJWTAuthentication(JWTAuthentication):
         session_key_user = f"user_session:{user.id}"
         session_key_ip = f"ip_session:{ip}"
 
-        user_session = get_redis.get(session_key_user)
+        user_session = get_redis().get(session_key_user)
         if user_session:
             old_jti, old_ip = user_session.decode().split(":")
             if old_jti != jti or old_ip != ip:
                 raise exceptions.AuthenticationFailed("Session expired — new login detected.")
 
-        ip_session = get_redis.get(session_key_ip)
+        ip_session = get_redis().get(session_key_ip)
         if ip_session:
             old_user_id, _ = ip_session.decode().split(":")
             if str(old_user_id) != str(user.id):
@@ -37,5 +37,5 @@ class CustomJWTAuthentication(JWTAuthentication):
 
 def store_user_session(user_id, jti, ip, ttl):
     session_value = f"{jti}:{ip}"
-    get_redis.setex(f"user_session:{user_id}", ttl, session_value)
-    get_redis.setex(f"ip_session:{ip}", ttl, f"{user_id}:{jti}")
+    get_redis().setex(f"user_session:{user_id}", ttl, session_value)
+    get_redis().setex(f"ip_session:{ip}", ttl, f"{user_id}:{jti}")
