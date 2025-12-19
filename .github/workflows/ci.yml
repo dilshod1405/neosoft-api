@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build-and-smoke-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: edu-neosoft:ci
+
+      - name: Run container (smoke test)
+        run: |
+          docker run -d --name edu-neosoft-ci \
+            -e NAME_DB=edu_neosoft \
+            -e USER_DB=postgres \
+            -e PASSWORD_DB=postgres123 \
+            -e DB_HOST=localhost \
+            -e DB_PORT=5432 \
+            -e REDIS_HOST=localhost \
+            -e REDIS_PORT=6379 \
+            -e REDIS_DB=0 \
+            -p 8000:8000 \
+            edu-neosoft:ci
+
+          # kutamiz, app crash qilmayaptimi tekshiramiz
+          sleep 20
+          docker ps -a
+
+      - name: Check container is running
+        run: |
+          if [ "$(docker inspect -f '{{.State.Running}}' edu-neosoft-ci)" != "true" ]; then
+            echo "Container is not running!"
+            docker logs edu-neosoft-ci
+            exit 1
+          fi
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker rm -f edu-neosoft-ci || true
