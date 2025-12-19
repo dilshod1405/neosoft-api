@@ -1,8 +1,9 @@
 from ..base import *
 from celery.schedules import crontab
 
-DEBUG = True
-ALLOWED_HOSTS = ["edu.neosoft.uz", "localhost", "mentor.neosoft.uz", "54.app.ioedge.host", "55.app.ioedge.host", "127.0.0.1", "0.0.0.0", "192.168.0.101"]
+DEBUG = False
+# ALLOWED_HOSTS = ["edu.neosoft.uz", "api.neosoft.uz", "localhost", "mentor.neosoft.uz", "54.app.ioedge.host", "55.app.ioedge.host", "127.0.0.1", "0.0.0.0", "192.168.0.101"]
+ALLOWED_HOSTS = ["edu.neosoft.uz", "api.neosoft.uz", "chat.neosoft.uz", "localhost", "mentor.neosoft.uz", "127.0.0.1", "0.0.0.0",]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://edu.neosoft.uz",
