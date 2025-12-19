@@ -8,18 +8,18 @@ ALLOWED_HOSTS = ["edu.neosoft.uz", "api.neosoft.uz", "chat.neosoft.uz", "localho
 CSRF_TRUSTED_ORIGINS = [
     "https://edu.neosoft.uz",
     "https://mentor.neosoft.uz",
-    "https://54.app.ioedge.host",
-    "https://55.app.ioedge.host"
+    "https://api.neosoft.uz"
+    # "https://54.app.ioedge.host",
+    # "https://55.app.ioedge.host"
 ]
 
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://localhost:5173",
     "https://edu.neosoft.uz",
     "https://mentor.neosoft.uz",
-    "https://54.app.ioedge.host",
-    "https://55.app.ioedge.host"
+    # "https://54.app.ioedge.host",
+    # "https://55.app.ioedge.host"
 ]
 
 CORS_ALLOW_CREDENTIALS = True
