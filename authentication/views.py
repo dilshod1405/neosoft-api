@@ -107,18 +107,10 @@ class LoginView(APIView):
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
 
-        response = Response(data)
-
-        response.set_cookie(
-            key="access",
-            value=data["access"],
-            httponly=True,
-            secure=settings.COOKIE_SECURE,
-            samesite=settings.COOKIE_SAMESITE,
-            domain=settings.COOKIE_DOMAIN,
-            path="/",
-            max_age=15 * 60,
-        )
+        response = Response({
+            "access": data["access"],
+            "user": data["user"],
+        })
 
         response.set_cookie(
             key="refresh",
@@ -131,7 +123,6 @@ class LoginView(APIView):
             max_age=7 * 24 * 60 * 60,
         )
 
-        # ✅ device_id cookie
         response.set_cookie(
             key="device_id",
             value=data["device_id"],
@@ -149,12 +140,14 @@ class LoginView(APIView):
 
 
 
+
 # ============================================================
 #                  REFRESH TOKEN VIEW
 # ============================================================
 
 @method_decorator(csrf_exempt, name="dispatch")
 class RefreshView(APIView):
+    authentication_classes = []
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -165,21 +158,25 @@ class RefreshView(APIView):
             return Response({"detail": "Unauthorized"}, status=401)
 
         try:
-            token = RefreshToken(refresh_token)
-            user_id = token["user_id"]
+            token_obj = RefreshToken(refresh_token)
+            user_id = token_obj["user_id"]
         except Exception:
             return Response({"detail": "Invalid refresh"}, status=401)
 
         redis = get_redis()
-        stored_device = redis.get(f"user_device:{user_id}")
+        saved_device = redis.get(f"user_device:{user_id}")
 
-        if not stored_device or stored_device != device_id:
-            return Response({"detail": "Session expired"}, status=401)
-
+        # ✅ decode yo‘q
+        if not saved_device or saved_device != device_id:
+            return Response({"detail": "Device mismatch"}, status=401)
 
         serializer = TokenRefreshSerializer(data={"refresh": refresh_token})
         serializer.is_valid(raise_exception=True)
-        return Response(serializer.validated_data)
+
+        return Response({
+            "access": serializer.validated_data["access"]
+        })
+
     
 
 
@@ -312,15 +309,31 @@ class ResendCodeView(generics.CreateAPIView):
 # ============================================================
 
 class LogoutView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
+    authentication_classes = []
 
     def post(self, request):
-        redis = get_redis()
-        redis.delete(f"user_device:{request.user.id}")
+        refresh_token = request.COOKIES.get("refresh")
+        user_id = None
 
-        response = Response({"detail": "Logged out"})
-        response.delete_cookie("access")
-        response.delete_cookie("refresh")
-        response.delete_cookie("device_id")
+        if refresh_token:
+            try:
+                token = RefreshToken(refresh_token)
+                user_id = token["user_id"]
+            except Exception:
+                pass
+
+        if user_id:
+            get_redis().delete(f"user_device:{user_id}")
+
+        language = get_language_from_path(request.path)
+
+        response = Response(
+            {"detail": t("auth.logout_success", language)},
+            status=status.HTTP_200_OK
+        )
+
+        response.delete_cookie("refresh", domain=settings.COOKIE_DOMAIN, path="/")
+        response.delete_cookie("device_id", domain=settings.COOKIE_DOMAIN, path="/")
+
         return response
-

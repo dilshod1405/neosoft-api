@@ -6,6 +6,7 @@ from .serializers import StudentCourseSerializer, SubmitAnswerSerializer, Catego
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from utils.device_token_checker import CustomJWTAuthentication
 from content.vdocipher.vdocipher_utils import (
     generate_otp, API_BASE, API_KEY
 )
@@ -32,7 +33,7 @@ class StudentCourseListView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_class = CourseFilter
     authentication_classes = [
-        JWTAuthentication,
+        CustomJWTAuthentication,
         SessionAuthentication,
     ]
 
