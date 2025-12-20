@@ -105,18 +105,13 @@ class LoginView(APIView):
             context={"request": request}
         )
         serializer.is_valid(raise_exception=True)
-
         data = serializer.validated_data
-
-        access = data.get("access")
-        refresh = data.get("refresh")
 
         response = Response(data)
 
-        # ✅ access cookie
         response.set_cookie(
             key="access",
-            value=access,
+            value=data["access"],
             httponly=True,
             secure=settings.COOKIE_SECURE,
             samesite=settings.COOKIE_SAMESITE,
@@ -125,21 +120,30 @@ class LoginView(APIView):
             max_age=15 * 60,
         )
 
-        # ✅ refresh cookie
         response.set_cookie(
             key="refresh",
-            value=refresh,
+            value=data["refresh"],
             httponly=True,
             secure=settings.COOKIE_SECURE,
             samesite=settings.COOKIE_SAMESITE,
             domain=settings.COOKIE_DOMAIN,
             path="/",
-            max_age=3 * 24 * 60 * 60,
+            max_age=7 * 24 * 60 * 60,
+        )
+
+        # ✅ device_id cookie
+        response.set_cookie(
+            key="device_id",
+            value=data["device_id"],
+            httponly=True,
+            secure=settings.COOKIE_SECURE,
+            samesite=settings.COOKIE_SAMESITE,
+            domain=settings.COOKIE_DOMAIN,
+            path="/",
+            max_age=7 * 24 * 60 * 60,
         )
 
         return response
-
-
 
 
 
@@ -151,41 +155,31 @@ class LoginView(APIView):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class RefreshView(APIView):
-    authentication_classes = []
     permission_classes = [AllowAny]
 
-    def post(self, request, *args, **kwargs):
-        print("=== REFRESH DEBUG ===")
-        print("COOKIES:", request.COOKIES)
-        print("HEADERS:", dict(request.headers))
-
+    def post(self, request):
         refresh_token = request.COOKIES.get("refresh")
-        if not refresh_token:
-            return Response(
-                {"detail": "Refresh token not found"},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
+        device_id = request.COOKIES.get("device_id")
+
+        if not refresh_token or not device_id:
+            return Response({"detail": "Unauthorized"}, status=401)
+
         try:
-            token_obj = RefreshToken(refresh_token)
-        except Exception as e:
-            return Response(
-                {"detail": "Invalid refresh token"},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
+            token = RefreshToken(refresh_token)
+            user_id = token["user_id"]
+        except Exception:
+            return Response({"detail": "Invalid refresh"}, status=401)
+
+        redis = get_redis()
+        stored_device = redis.get(f"user_device:{user_id}")
+
+        if not stored_device or stored_device != device_id:
+            return Response({"detail": "Session expired"}, status=401)
+
 
         serializer = TokenRefreshSerializer(data={"refresh": refresh_token})
-        try:
-            serializer.is_valid(raise_exception=True)
-        except TokenError as e:
-            print("❌ Serializer error:", repr(e))
-            return Response(
-                {"detail": str(e)},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
-
-        data = serializer.validated_data
-
-        return Response(data, status=status.HTTP_200_OK)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.validated_data)
     
 
 
@@ -321,15 +315,12 @@ class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        user = request.user
-        ip = request.META.get("REMOTE_ADDR")
+        redis = get_redis()
+        redis.delete(f"user_device:{request.user.id}")
 
-        get_redis().delete(f"user_session:{user.id}")
-        get_redis().delete(f"ip_session:{ip}")
+        response = Response({"detail": "Logged out"})
+        response.delete_cookie("access")
+        response.delete_cookie("refresh")
+        response.delete_cookie("device_id")
+        return response
 
-        language = get_language_from_path(request.path)
-
-        return Response(
-            {"detail": t("auth.logout_success", language)},
-            status=status.HTTP_200_OK
-        )

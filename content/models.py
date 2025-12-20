@@ -20,6 +20,9 @@ class Category(models.Model):
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='subcategories')
     folder_id = models.CharField(max_length=100, blank=True, null=True, help_text="VdoCipher folder ID (for category/subcategory)")
 
+    class Meta:
+        ordering = ["id"]
+        
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name_uz)

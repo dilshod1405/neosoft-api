@@ -15,6 +15,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 import json
 import requests
+import ipaddress
 from rest_framework.response import Response
 
 
@@ -101,15 +102,7 @@ class VdoCipherOTPView(APIView):
 
         client_ip = get_client_ip(request)
 
-        payload = {
-            "ttl": 300,
-            "annotate": annotate_string,
-            "userId": user_id,
-            "whitelisthref": "edu.neosoft.uz",
-        }
-
-        if client_ip:
-            payload["ipGeo"] = {"allow": [client_ip]}
+        user_id = f"user_{request.user.id}"
 
         annotate_string = json.dumps([{
             "type": "rtext",
@@ -120,15 +113,20 @@ class VdoCipherOTPView(APIView):
             "interval": "5000"
         }])
 
-        user_id = f"user_{request.user.id}"
-
         payload = {
             "ttl": 300,
             "annotate": annotate_string,
             "userId": user_id,
-            "whitelisthref": "localhost:3000",
-            "ipGeo": {"allow": [client_ip]}
+            "whitelisthref": "edu.neosoft.uz",
         }
+
+        if client_ip:
+            try:
+                ip_obj = ipaddress.ip_address(client_ip)
+                if ip_obj.version == 4 and not ip_obj.is_private:
+                    payload["ipGeo"] = {"allow": [client_ip]}
+            except ValueError:
+                pass
 
         url = f"{API_BASE}/videos/{video_id}/otp"
 
@@ -147,11 +145,15 @@ class VdoCipherOTPView(APIView):
             if response.status_code not in (200, 201):
                 return Response(
                     {"error": "Failed to generate OTP", "vdocipher_msg": response.text},
-                status=response.status_code)
+                    status=response.status_code
+                )
 
             otp_data = response.json()
             otp_data["client_ip"] = client_ip
             return Response(otp_data)
 
         except Exception as e:
-            return Response({"error": "Vdocipher connection failed", "details": str(e)}, status=502)
+            return Response(
+                {"error": "Vdocipher connection failed", "details": str(e)},
+                status=502
+            )
