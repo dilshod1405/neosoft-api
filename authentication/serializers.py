@@ -2,6 +2,7 @@ from rest_framework import serializers
 from validators.validate_uzbek_phone import validate_uzbek_phone
 from .models import CustomUser
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+import ipaddress
 from utils.get_redis import get_redis
 from utils.get_client_ip import get_client_ip
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -84,22 +85,21 @@ class CustomLoginSerializer(serializers.Serializer):
         request = self.context.get("request")
         ip = get_client_ip(request)
 
-        try:
-            if not ip:
-                logger.warning("IP not detected — skipping GeoIP check")
-            elif ip.startswith(("127.", "10.", "192.168.", "172.")):
-                logger.warning(f"LOCAL IP detected ({ip}) — skipping GeoIP check")
-            else:
-                from django.contrib.gis.geoip2 import GeoIP2
-                gi = GeoIP2()
-                country = gi.country(ip)["country_code"]
-                logger.warning(f"COUNTRY: {country}")
-                if country != "UZ":
-                    raise serializers.ValidationError({
-                        "detail": "O'zbekistondan tashqarida login qilish mumkin emas."
-                    })
-        except Exception as e:
-            logger.error(f"GEOIP ERROR: {e}")
+        if ip:
+            try:
+                ip_obj = ipaddress.ip_address(ip)
+                if ip_obj.is_private:
+                    logger.warning(f"PRIVATE IP ({ip}) — skipping GeoIP")
+                else:
+                    from django.contrib.gis.geoip2 import GeoIP2
+                    gi = GeoIP2()
+                    country = gi.country(ip)["country_code"]
+                    if country != "UZ":
+                        raise serializers.ValidationError({
+                            "detail": "O'zbekistondan tashqarida login qilish mumkin emas."
+                        })
+            except Exception as e:
+                logger.error(f"GEOIP ERROR: {e}")
 
 
 
@@ -133,6 +133,7 @@ class CustomLoginSerializer(serializers.Serializer):
                 "is_mentor": user.is_mentor,
             },
         }
+
 
 
 
