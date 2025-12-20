@@ -81,6 +81,7 @@ DATABASES = {
     }
 }
 
+GEOIP_PATH = BASE_DIR / "geoip"
 
 
 AUTH_PASSWORD_VALIDATORS = [
