@@ -1,10 +1,12 @@
+import os
+import shutil
+
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.utils import timezone
 from django.template import Template, Context
 from django.conf import settings
-import os
 
 from authentication.mentors.models import MentorContract, MentorProfile
 from utils.generator_contract_pdf import generate_contract_pdf
@@ -25,7 +27,10 @@ class GenerateContractView(APIView):
         try:
             mentor = user.mentor_profile
         except MentorProfile.DoesNotExist:
-            return Response({"success": False, "message": "Mentor profili topilmadi."}, status=400)
+            return Response(
+                {"success": False, "message": "Mentor profili topilmadi."},
+                status=400
+            )
 
         contract, created = MentorContract.objects.get_or_create(mentor=mentor)
 
@@ -43,6 +48,7 @@ class GenerateContractView(APIView):
             contract.document_id = f"MN-{contract.pk}"
             contract.save()
 
+        # 🔎 Required fields check
         required = {
             "passport_number": mentor.passport_number,
             "passport_issued_by": mentor.passport_issued_by,
@@ -62,6 +68,7 @@ class GenerateContractView(APIView):
                 "missing_fields": missing
             }, status=400)
 
+        # 📄 Generate PDF if needed
         if created or not contract.pdf_file:
             lang = request.data.get("lang", "uz")
             template_text = CONTRACT_TEXT_UZ if lang == "uz" else CONTRACT_TEXT_RU
@@ -72,18 +79,21 @@ class GenerateContractView(APIView):
                 "mentor_fio": f"{user.first_name} {user.last_name}",
                 "mentor_passport": mentor.passport_number,
                 "passport_issued_by": mentor.passport_issued_by,
-                "passport_issue_date": mentor.passport_issue_date.strftime("%d.%m.%Y") if mentor.passport_issue_date else "",
+                "passport_issue_date": mentor.passport_issue_date.strftime("%d.%m.%Y")
+                if mentor.passport_issue_date else "",
                 "mentor_address": mentor.address,
                 "mentor_phone": user.phone,
                 "mentor_card": mentor.card_number,
                 "mentor_pinfl": mentor.pinfl or "",
-                "mentor_dob": mentor.dob.strftime("%d.%m.%Y") if mentor.dob else "",
+                "mentor_dob": mentor.dob.strftime("%d.%m.%Y")
+                if mentor.dob else "",
             }))
-
 
             stamp_path = os.path.join(settings.STATIC_ROOT, "images", "stamp_blue.png")
             if not os.path.exists(stamp_path):
-                stamp_path = os.path.join(settings.BASE_DIR, "static", "images", "stamp_blue.png")
+                stamp_path = os.path.join(
+                    settings.BASE_DIR, "static", "images", "stamp_blue.png"
+                )
 
             pdf_path = generate_contract_pdf({
                 "contract_body": rendered_body,
@@ -94,7 +104,9 @@ class GenerateContractView(APIView):
             os.makedirs(private_root, exist_ok=True)
 
             final_path = os.path.join(private_root, os.path.basename(pdf_path))
-            os.rename(pdf_path, final_path)
+
+            # ✅ MUHIM: cross-device safe move
+            shutil.move(pdf_path, final_path)
 
             contract.pdf_file = os.path.basename(final_path)
             contract.generated_at = timezone.now()
