@@ -6,7 +6,6 @@ __pycache__/
 db.sqlite3
 media/
 staticfiles/
-static/
 private/
 
 # If using local settings
@@ -81,5 +80,4 @@ logs/
 # Media
 /media/
 
-# Static
-/static/
+#
