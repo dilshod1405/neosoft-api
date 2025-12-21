@@ -50,7 +50,10 @@ class GenerateContractView(APIView):
             "address": mentor.address,
             "card_number": mentor.card_number,
             "phone": user.phone,
+            "pinfl": mentor.pinfl,
+            "dob": mentor.dob,
         }
+
         missing = [k for k, v in required.items() if not v]
         if missing:
             return Response({
@@ -69,11 +72,14 @@ class GenerateContractView(APIView):
                 "mentor_fio": f"{user.first_name} {user.last_name}",
                 "mentor_passport": mentor.passport_number,
                 "passport_issued_by": mentor.passport_issued_by,
-                "passport_issue_date": mentor.passport_issue_date,
+                "passport_issue_date": mentor.passport_issue_date.strftime("%d.%m.%Y") if mentor.passport_issue_date else "",
                 "mentor_address": mentor.address,
                 "mentor_phone": user.phone,
                 "mentor_card": mentor.card_number,
+                "mentor_pinfl": mentor.pinfl or "",
+                "mentor_dob": mentor.dob.strftime("%d.%m.%Y") if mentor.dob else "",
             }))
+
 
             stamp_path = os.path.join(settings.STATIC_ROOT, "images", "stamp_blue.png")
             if not os.path.exists(stamp_path):

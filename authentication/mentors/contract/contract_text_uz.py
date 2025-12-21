@@ -94,7 +94,7 @@ Qonunsiz, pornografik, diniy-ekstremistik, zo‘ravonlik yoki mualliflik huquqin
 </table>
 
 <p>
-4.2. Buyurtmachining ulushi ko‘rsatilgan karta <b>{{ mentor_card }}</b> ga har oy 1-dan 7-gacha kunlarda o‘tkaziladi.
+4.2. Buyurtmachining ulushi ko‘rsatilgan karta raqami <b>{{ mentor_card }}</b> ga mentorning admin panelida mentorning so'rovi yuborishilishi orqali qonuniy va xavfsiz o'tkazib beriladi.
 </p>
 
 <p>
@@ -133,7 +133,7 @@ Bu Buyurtmachiga xizmat narxi shakllanishini to‘liq tushunish uchun taqdim eti
 
 <tr>
     <td><b>Serverlar va hosting</b></td>
-    <td>DRM video-xosting (VdoCipher), AWS/CDN, ajratilgan serverlar va xavfsizlik.</td>
+    <td>DRM video-xosting (VdoCipher), Hostinger VPS, ajratilgan serverlar va xavfsizlik harajatlari.</td>
     <td>≈ 50$ / oy</td>
 </tr>
 
@@ -141,23 +141,23 @@ Bu Buyurtmachiga xizmat narxi shakllanishini to‘liq tushunish uchun taqdim eti
     <td><b>Marketing va reklama</b></td>
     <td>
         Ijtimoiy tarmoqlarda reklama, target marketing, platformani rivojlantirish, 
-        Buyurtmachi kurslarini targ‘ib qilish.
+        buyurtmachi kurslarini targ‘ib qilish.
     </td>
     <td>O‘zgaruvchan</td>
 </tr>
 </table>
 
 <p>
-4.5. Ko‘rsatilgan ulushlar ma’lumot maqsadida. Haqiqiy xarajatlar bozor sharoitiga qarab o‘zgarishi va Ijrochi tomonidan optimallashtirilishi mumkin.
+4.5. Ko‘rsatilgan ulushlar ma’lumot maqsadida. Haqiqiy xarajatlar bozor sharoitiga qarab o‘zgarishi va ijrochi tomonidan optimallashtirilishi mumkin.
 </p>
 
 
 <h2 style="text-align:center;">5. Javobgarlik</h2>
 
 <p>5.1. Buyurtmachi yuklanadigan kontent qonuniyligi uchun to‘liq javobgar.</p>
-<p>5.2. Ijrochi platformaning texnik ishlashini ta’minlaydi, lekin Buyurtmachi kontenti mazmuni uchun javobgar emas.</p>
-<p>5.3. Kontentning noqonuniy tarqalishi holatida talaba shaxsiyati watermark orqali aniqlanadi.</p>
-<p>5.4. Texnik profilaktika ishlari haqida Ijrochi oldindan xabar beradi.</p>
+<p>5.2. Ijrochi platformaning texnik ishlashini ta’minlaydi, lekin buyurtmachi kontenti mazmuni uchun javobgar emas.</p>
+<p>5.3. Kontentning noqonuniy tarqalishi holatida talaba shaxsiyati watermark (har bir videoda talaba ma'lumotlari yozilgan bo'ladi) orqali aniqlanadi.</p>
+<p>5.4. Texnik profilaktika ishlari haqida ijrochi oldindan xabar beradi.</p>
 
 
 <h2 style="text-align:center;">6. Maxfiylik</h2>
@@ -167,7 +167,7 @@ Bu Buyurtmachiga xizmat narxi shakllanishini to‘liq tushunish uchun taqdim eti
 </p>
 
 <p>
-6.2. Buyurtmachi daromadi, statistika va talabalar haqidagi ma’lumot maxfiy hisoblanadi.
+6.2. Buyurtmachi daromadi, shaxsiy ma'lumotlari, statistika va talabalar haqidagi ma’lumot maxfiy hisoblanadi.
 </p>
 
 
@@ -219,6 +219,8 @@ Bu Buyurtmachiga xizmat narxi shakllanishini to‘liq tushunish uchun taqdim eti
         <p><b>Manzil:</b> {{ mentor_address }}</p>
         <p><b>Telefon:</b> {{ mentor_phone }}</p>
         <p><b>Karta:</b> {{ mentor_card }}</p>
+        <p><strong>PINFL:</strong> {{ mentor_pinfl }}</p>
+        <p><strong>Tug‘ilgan sana:</strong> {{ mentor_dob }}</p>
     </div>
 </div>
 """

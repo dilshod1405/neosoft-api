@@ -101,29 +101,44 @@ class MentorProfileViewSet(viewsets.ModelViewSet):
 #                    DOWNLOADING SECURED CONTRACT
 # =====================================================================
 
+
 class ContractDownloadView(APIView):
     permission_classes = [IsAuthenticated, IsMentor]
 
     def get(self, request):
         user = request.user
 
-        if not user.is_mentor:
+        if not getattr(user, "is_mentor", False):
             return Response({"detail": "Siz mentor emassiz"}, status=403)
 
         try:
-            contract = user.mentor_profile.contract
+            mentor_profile = user.mentor_profile
+            contract = mentor_profile.contract
         except MentorContract.DoesNotExist:
             raise Http404("Shartnoma topilmadi")
 
         if not contract.pdf_file or not contract.pdf_file.name:
             raise Http404("PDF fayl yuklanmagan")
 
-        file_path = os.path.join(settings.PRIVATE_CONTRACT_ROOT, contract.pdf_file.name)
+        file_path = os.path.join(
+            settings.PRIVATE_CONTRACT_ROOT,
+            contract.pdf_file.name
+        )
 
         if not os.path.exists(file_path):
             raise Http404("PDF fayl mavjud emas")
 
-        nice_filename = f"Shartnoma_{contract.mentor.user.get_full_name()}.pdf"
+        user_obj = contract.mentor.user
+
+        if hasattr(user_obj, "get_full_name") and isinstance(user_obj.get_full_name, str):
+            full_name = user_obj.get_full_name
+        else:
+            full_name = f"{user_obj.first_name} {user_obj.last_name}".strip()
+
+        if not full_name:
+            full_name = f"user_{user_obj.id}"
+
+        nice_filename = f"Shartnoma_{full_name}.pdf"
 
         response = FileResponse(
             open(file_path, "rb"),
