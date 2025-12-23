@@ -110,11 +110,11 @@ USE_TZ = True
 
 LANGUAGES = [('uz', 'Uzbek'), ('ru', 'Russian')]
 
-STATIC_URL = '/static/'
+STATIC_URL = 'https://api.neosoft.uz/static/'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = '/media/'
+MEDIA_URL = 'https://api.neosoft.uz/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -254,6 +254,9 @@ LOGGING = {
 
 
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = 1048576000  # 1 GB
-FILE_UPLOAD_MAX_MEMORY_SIZE = 1048576000  # 1 GB
+# DATA_UPLOAD_MAX_MEMORY_SIZE = 1048576000  # 1 GB
+# FILE_UPLOAD_MAX_MEMORY_SIZE = 1048576000  # 1 GB
 
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
