@@ -110,11 +110,11 @@ USE_TZ = True
 
 LANGUAGES = [('uz', 'Uzbek'), ('ru', 'Russian')]
 
-STATIC_URL = 'https://api.neosoft.uz/static/'
+STATIC_URL = '/static/'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = 'https://api.neosoft.uz/media/'
+MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 
