@@ -21,6 +21,19 @@
 
 ---
 
+<div align="center">
+
+### 🖼️ Homepage Preview
+
+<!-- Replace with your homepage screenshot URL or path -->
+<img src="https://i.ibb.co/07bXktk/image-2026-01-13-09-21-01.png" alt="Edu NeoSoft Homepage" width="100%" style="max-width: 1200px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+
+*Edu NeoSoft Platform Homepage*
+
+</div>
+
+---
+
 ## 📋 Table of Contents
 
 - [Overview](#-overview)
@@ -769,25 +782,6 @@ coverage report
 
 ---
 
-## 🤝 Contributing
-
-We welcome contributions! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Merge Request
-
-### Code Style
-
-- Follow PEP 8 Python style guide
-- Use type hints where appropriate
-- Write docstrings for functions and classes
-- Keep functions focused and single-purpose
-
----
-
 ## 📝 License
 
 This project is proprietary software. All rights reserved.
@@ -811,7 +805,6 @@ This project is proprietary software. All rights reserved.
 - [ ] AI-powered course recommendations
 - [ ] Enhanced reporting system
 - [ ] Multi-currency support
-- [ ] Advanced search with Elasticsearch
 - [ ] WebSocket support for real-time features
 
 ---
