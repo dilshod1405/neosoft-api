@@ -1,367 +1,827 @@
 <div align="center">
-  <img src="https://readme-typing-svg.demolab.com/?font=Fira+Code&size=32&duration=3000&pause=1000&color=00D9FF&center=true&vCenter=true&width=600&lines=Hello+World!+%F0%9F%91%8B;I'm+Dilshod+Normurodov;Software+Engineer;Full+Stack+Developer;Microservices+Architect;Welcome+to+my+Profile!)](https://git.io/typing-svg)
-  
-  <img src="https://komarev.com/ghpvc/?username=dilshod1405&color=00D9FF&label=PROFILE+VIEWS&style=for-the-badge" alt="Profile Views" />
+
+<!-- Logo Placeholder - Replace with your logo URL -->
+<!-- <img src="YOUR_LOGO_URL_HERE" alt="Edu NeoSoft Logo" width="200" height="200"> -->
+
+# 🎓 Edu NeoSoft API
+
+**A Comprehensive Educational Platform Backend System**
+
+[![Django](https://img.shields.io/badge/Django-5.2.6-092E20?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com/)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Redis](https://img.shields.io/badge/Redis-7-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
+[![Celery](https://img.shields.io/badge/Celery-5.5.3-37814A?style=for-the-badge&logo=celery&logoColor=white)](https://celeryproject.org/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+
+[![API Documentation](https://img.shields.io/badge/API-Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)](https://edu.neosoft.uz/api/swagger/)
+[![License](https://img.shields.io/badge/License-Proprietary-red?style=for-the-badge)](LICENSE)
+
 </div>
 
 ---
-
-## 👨‍💻 About Me
-
-I'm a **Software Engineer** and **Full Stack Developer** specializing in building scalable, production-ready applications. With expertise spanning from backend microservices to modern frontend interfaces, I architect solutions that handle real-world complexity.
-
-**📍 Location:** Tashkent, Uzbekistan  
-**🎓 Education:** PDP Academy, Udemy  
-**🌍 Languages:** Uzbek (Native), English (B2), Russian (B2), Korean (B1)
-
-### 💡 Core Expertise
-
-- 🏗️ **System Architecture**: Microservices, Event-Driven Systems, Clean Architecture
-- ⚡ **Backend Development**: Django REST Framework, Go, Java, High-Performance APIs
-- 🎨 **Frontend Development**: React, TypeScript, Modern UI Frameworks
-- 🔄 **Real-Time Systems**: WebSocket, Redis Streams, Event-Driven Communication
-- 🐳 **DevOps**: Docker, Container Orchestration, CI/CD
-- 🗄️ **Data Engineering**: PostgreSQL, MongoDB, Redis, Database Optimization
-
----
-
-## 📊 GitHub Analytics
-
-<div align="center">
-  
-  <img height="180em" src="https://github-readme-stats.vercel.app/api?username=dilshod1405&show_icons=true&theme=tokyonight&hide_border=false&include_all_commits=true&count_private=true&bg_color=0D1117&title_color=00D9FF&icon_color=00D9FF&text_color=FFFFFF" alt="GitHub Stats" />
-  <img height="180em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=dilshod1405&theme=tokyonight&hide_border=false&layout=compact&langs_count=10&bg_color=0D1117&title_color=00D9FF&text_color=FFFFFF" alt="Top Languages" />
-  
-  <img src="https://streak-stats.demolab.com/?user=dilshod1405&theme=tokyonight&hide_border=false&date_format=M%20j%5B%2C%20Y%5D&ring=00D9FF&fire=00D9FF&currStreakLabel=00D9FF&background=0D1117" alt="GitHub Streak" height="180"/>
-  
-  <img src="https://github-profile-trophy.vercel.app/?username=dilshod1405&theme=tokyonight&no-frame=false&no-bg=false&margin-w=4&margin-h=4&column=7&row=2" alt="GitHub Trophies" />
-  
-  <img src="https://github-readme-activity-graph.vercel.app/graph?username=dilshod1405&theme=tokyo-night&hide_border=false&bg_color=0D1117&color=00D9FF&line=00D9FF&point=FFFFFF&area=true&area_color=00D9FF" alt="GitHub Activity Graph" />
-  
-</div>
-
----
-
-## 🛠️ Technology Stack
-
-<details>
-<summary><b>🔷 Backend Technologies</b></summary>
 
 <div align="center">
 
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)
-![Django REST Framework](https://img.shields.io/badge/DRF-ff1709?style=for-the-badge&logo=django&logoColor=white)
-![Go](https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white)
-![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-![Celery](https://img.shields.io/badge/Celery-37814A?style=for-the-badge&logo=celery&logoColor=white)
+### 🖼️ Homepage Preview
+
+<!-- Replace with your homepage screenshot URL or path -->
+<img src="https://i.ibb.co/07bXktk/image-2026-01-13-09-21-01.png" alt="Edu NeoSoft Homepage" width="100%" style="max-width: 1200px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+<img src="https://i.ibb.co/ZRWg4KyK/image-2026-01-13-09-23-33.png" alt="Edu NeoSoft Homepage" width="100%" style="max-width: 1200px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+<img src="https://i.ibb.co/bg3z3H7V/image-2026-01-13-09-24-49.png" alt="Edu NeoSoft Homepage" width="100%" style="max-width: 1200px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+
+*Edu NeoSoft Platform Homepage*
 
 </div>
-
-</details>
-
-<details>
-<summary><b>🎨 Frontend Technologies</b></summary>
-
-<div align="center">
-
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![Material-UI](https://img.shields.io/badge/Material--UI-0081CB?style=for-the-badge&logo=material-ui&logoColor=white)
-![Ant Design](https://img.shields.io/badge/Ant%20Design-0170FE?style=for-the-badge&logo=ant-design&logoColor=white)
-![Redux](https://img.shields.io/badge/Redux-764ABC?style=for-the-badge&logo=redux&logoColor=white)
-
-</div>
-
-</details>
-
-<details>
-<summary><b>🗄️ Databases & Caching</b></summary>
-
-<div align="center">
-
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
-![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
-
-</div>
-
-</details>
-
-<details>
-<summary><b>🚀 DevOps & Tools</b></summary>
-
-<div align="center">
-
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
-![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
-![WebSocket](https://img.shields.io/badge/WebSocket-010101?style=for-the-badge&logo=socket.io&logoColor=white)
-![NGINX](https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=nginx&logoColor=white)
-
-</div>
-
-</details>
 
 ---
 
-## 🏗️ Architecture & System Design
+## 📋 Table of Contents
 
-### Expertise Areas
-
-<table>
-<tr>
-<td width="50%">
-
-#### Backend Architecture
-- ✅ **Layered Architecture** (Controller → Service → Repository)
-- ✅ **Microservices** design patterns
-- ✅ **Event-Driven Architecture** (Redis Streams)
-- ✅ **RESTful API** design principles
-- ✅ **JWT Authentication** & Authorization
-- ✅ **Database Optimization** (Indexing, Query optimization)
-- ✅ **Caching Strategies** (Redis, Cache layers)
-
-</td>
-<td width="50%">
-
-#### System Design Patterns
-- ✅ **WebSocket Hub** pattern (Room-based messaging)
-- ✅ **Producer-Consumer** (Redis Streams)
-- ✅ **Repository Pattern** (Data access abstraction)
-- ✅ **Dependency Injection**
-- ✅ **Async Task Processing** (Celery)
-- ✅ **API Gateway** patterns
-- ✅ **Service-Oriented Architecture**
-
-</td>
-</tr>
-</table>
-
-### Real-World Implementations
-
-#### 🎯 High-Performance Go Microservices
-- **WebSocket Hub**: Thread-safe room management with mutex-based concurrency
-- **Redis Streams Consumer**: Event-driven notification system with consumer groups
-- **MongoDB Repository**: Optimized data access with proper indexing
-- **JWT Integration**: Cross-service authentication with Django backend
-
-#### 🎯 Scalable Django Applications
-- **REST API Architecture**: Comprehensive Django REST Framework implementations
-- **Payment Integration**: Multiple payment gateway integrations (Payme, Click, Uzum, Multicard)
-- **Background Processing**: Celery task queues with Redis broker
-- **Caching Layer**: Redis caching for performance optimization
-- **API Documentation**: Swagger/OpenAPI documentation with drf-yasg
+- [Overview](#-overview)
+- [Features](#-features)
+- [Architecture](#-architecture)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Database Schema](#-database-schema)
+- [Installation](#-installation)
+- [Configuration](#-configuration)
+- [API Documentation](#-api-documentation)
+- [Deployment](#-deployment)
+- [Contributing](#-contributing)
 
 ---
 
-## 💼 Featured Projects
+## 🎯 Overview
 
-<details>
-<summary><b>📚 Education Platforms - Multi-Service Architecture</b></summary>
+**Edu NeoSoft API** is a robust, scalable backend system powering a modern educational platform. It provides comprehensive functionality for managing online courses, student enrollments, mentor contracts, payment processing, and real-time notifications. Built with Django REST Framework, the system supports multi-language content (Uzbek/Russian), secure video streaming, and seamless integration with multiple payment gateways.
 
-### Edu-NeoSoft Platform
+### Key Highlights
 
-**Architecture:** Microservices | Event-Driven | Real-Time Communication
-
-**Backend Services:**
-- **Django REST API**: Core business logic, authentication, payment processing
-- **Go Chat Service**: Real-time WebSocket messaging with MongoDB persistence
-- **Go Notification Service**: Redis Streams-based event-driven notifications
-
-**Frontend Applications:**
-- **Student UI**: React + TypeScript application
-- **Mentor UI**: React + TypeScript application
-- **Admin Dashboard**: Management interfaces
-
-**Key Features:**
-- Real-time chat with WebSocket (room-based, presence tracking, read receipts)
-- Event-driven notifications via Redis Streams
-- JWT authentication across services
-- Payment gateway integrations
-- Video streaming integration (VdoCipher)
-- Comprehensive API documentation
-
-**Technologies:** Django, Go, React, TypeScript, PostgreSQL, MongoDB, Redis, WebSocket, Docker
-
-</details>
-
-<details>
-<summary><b>🏠 Property Management Platform - Full Stack Solution</b></summary>
-
-### MHP (Master Homes Platform)
-
-**Architecture:** Monolithic Backend + Multiple Frontend Applications + Microservices
-
-**Components:**
-- **Django REST API**: Comprehensive property management backend
-- **CRM System**: React + TypeScript + Material-UI
-- **Analytics Dashboard**: Data visualization and reporting
-- **Public UI**: Customer-facing property listings
-- **Go Property Finder Service**: Microservice for property search
-
-**Key Features:**
-- Property management and listings
-- CRM functionality for agents
-- Analytics and reporting dashboards
-- Payment integration
-- Real-time updates
-- Multi-language support
-
-**Technologies:** Django, React, TypeScript, Go, PostgreSQL, Redis, Material-UI, Docker
-
-</details>
-
-<details>
-<summary><b>🚗 Parking Management System</b></summary>
-
-### Parking24 Dashboard
-
-**Modern parking management platform with real-time capabilities**
-
-**Key Features:**
-- Real-time parking tracking
-- QR code generation and scanning
-- Maps integration (Leaflet, Yandex Maps)
-- Analytics and reporting (Chart.js, ApexCharts)
-- Invoice management
-- Multi-tenant architecture
-
-**Technologies:** React, TypeScript, Ant Design, Redux Toolkit, WebSocket, Leaflet, Docker
-
-</details>
-
-<details>
-<summary><b>🎓 Education Platform API</b></summary>
-
-### BIMUZ API
-
-**Comprehensive Django REST API for education platform**
-
-**Features:**
-- User management (Students, Employees)
-- Education module (Groups, Lessons, Bookings)
-- Payment integration (Multicard)
-- JWT authentication
-- Redis caching
-- Celery background tasks
-- API documentation (Swagger/ReDoc)
-
-**Technologies:** Django, Django REST Framework, PostgreSQL, Redis, Celery, Docker
-
-</details>
+- 🎓 **Course Management**: Complete CRUD operations for courses, lessons, quizzes, and resources
+- 👥 **Multi-Role System**: Separate authentication and permissions for Students, Mentors, and Managers
+- 💳 **Payment Integration**: Support for Payme, Click, Uzum, and Multicard payment systems
+- 📊 **Progress Tracking**: Real-time student progress monitoring with completion percentages
+- 🔔 **Notification System**: Real-time notifications with expiration and read status
+- 📄 **Contract Management**: Automated PDF contract generation for mentors
+- 🎥 **Video Streaming**: Secure video delivery via VdoCipher integration
+- 🌍 **Internationalization**: Full support for Uzbek and Russian languages
+- ⚡ **Async Processing**: Celery-based background tasks for heavy operations
 
 ---
 
-## 🎯 Technical Skills Breakdown
+## ✨ Features
 
+### Authentication & Authorization
+- Custom user model with role-based access control (Student, Mentor, Manager)
+- JWT-based authentication with refresh tokens
+- Google OAuth integration
+- Email verification system
+- Phone number validation for Uzbek format
+
+### Course Management
+- Hierarchical category system with parent-child relationships
+- Multi-level course structure (Beginner, Intermediate, Advanced)
+- Lesson management with video content (VdoCipher)
+- Quiz system with multiple-choice questions
+- Course prerequisites and dependencies
+- Course ratings and reviews
+- Resource attachments (PDF, DOCX, PPTX, ZIP)
+
+### Student Features
+- Course enrollment and progress tracking
+- Lesson completion tracking
+- Quiz scoring and results
+- Course completion certificates
+- Personalized learning dashboard
+- Discount code application
+
+### Mentor Features
+- Profile management with detailed information
+- Course creation and management
+- Lesson approval workflow
+- Contract generation and signing
+- Revenue tracking and balance management
+- Performance analytics
+
+### Payment System
+- Multiple payment gateway integration (Payme, Click, Uzum, Multicard)
+- Order management with discount application
+- Transaction history and tracking
+- Revenue sharing between platform and mentors
+- Platform balance management
+
+### Additional Features
+- Discount system with promo codes and holiday discounts
+- Real-time notification system
+- Chat service integration
+- Email and SMS notifications
+- Automated contract PDF generation
+- Redis caching for performance
+- Celery task queue for async operations
+
+---
+
+## 🏗️ Architecture
+
+### System Architecture Diagram
+
+```mermaid
+graph TB
+    subgraph "Client Layer"
+        WEB[Web Application]
+        MOBILE[Mobile App]
+    end
+    
+    subgraph "API Gateway"
+        NGINX[Nginx Proxy Manager]
+    end
+    
+    subgraph "Application Layer"
+        API[Django REST API]
+        ADMIN[Django Admin]
+        SWAGGER[Swagger/ReDoc]
+    end
+    
+    subgraph "Background Services"
+        CELERY[Celery Worker]
+        BEAT[Celery Beat]
+        FLOWER[Flower Monitor]
+    end
+    
+    subgraph "Data Layer"
+        POSTGRES[(PostgreSQL)]
+        REDIS[(Redis Cache)]
+    end
+    
+    subgraph "External Services"
+        VDOCIPHER[VdoCipher Video]
+        PAYME[Payme Gateway]
+        CLICK[Click Gateway]
+        UZUM[Uzum Gateway]
+        MULTICARD[Multicard Gateway]
+        ESKIZ[Eskiz SMS]
+        GOOGLE[Google OAuth]
+    end
+    
+    WEB --> NGINX
+    MOBILE --> NGINX
+    NGINX --> API
+    NGINX --> ADMIN
+    NGINX --> SWAGGER
+    
+    API --> POSTGRES
+    API --> REDIS
+    API --> CELERY
+    API --> VDOCIPHER
+    API --> PAYME
+    API --> CLICK
+    API --> UZUM
+    API --> MULTICARD
+    API --> ESKIZ
+    API --> GOOGLE
+    
+    CELERY --> POSTGRES
+    CELERY --> REDIS
+    BEAT --> CELERY
+    FLOWER --> CELERY
 ```
-Backend Development      ████████████████████ 95%
-  • Django/Python        ████████████████████ 95%
-  • Go (Golang)          ████████████████░░░░ 80%
-  • Java/Spring Boot     ████████████░░░░░░░░ 60%
-  • REST API Design      ████████████████████ 95%
-  • Microservices        ██████████████████░░ 90%
 
-Frontend Development     ████████████████████ 90%
-  • React                ████████████████████ 95%
-  • TypeScript           ██████████████████░░ 90%
-  • State Management     ██████████████████░░ 90%
-  • Modern UI Libraries  ██████████████████░░ 90%
+### Request Flow Diagram
 
-Database & Storage       ████████████████░░░░ 80%
-  • PostgreSQL           ████████████████░░░░ 85%
-  • MongoDB              ██████████████░░░░░░ 75%
-  • Redis                ████████████████░░░░ 80%
-  • Query Optimization   ████████████████░░░░ 80%
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Nginx
+    participant Django
+    participant Redis
+    participant PostgreSQL
+    participant Celery
+    participant External
 
-DevOps & Infrastructure  ████████████████░░░░ 80%
-  • Docker               ████████████████░░░░ 85%
-  • CI/CD                ████████████░░░░░░░░ 65%
-  • Linux                ██████████████░░░░░░ 75%
-  • System Design        ██████████████████░░ 90%
+    Client->>Nginx: HTTP Request
+    Nginx->>Django: Forward Request
+    Django->>Redis: Check Cache
+    alt Cache Hit
+        Redis-->>Django: Cached Data
+    else Cache Miss
+        Django->>PostgreSQL: Query Database
+        PostgreSQL-->>Django: Data
+        Django->>Redis: Store in Cache
+    end
+    Django->>Celery: Async Task (if needed)
+    Django->>External: External API Call (if needed)
+    External-->>Django: Response
+    Django-->>Nginx: JSON Response
+    Nginx-->>Client: HTTP Response
+    Celery->>PostgreSQL: Background Processing
 ```
 
 ---
 
-## 🚀 Key Achievements & Practices
+## 🛠️ Tech Stack
 
-### Code Quality & Best Practices
-- ✅ **Type Safety**: Full TypeScript coverage in frontend projects
-- ✅ **Testing**: Unit tests, integration tests (Go, Python)
-- ✅ **Error Handling**: Comprehensive error handling patterns
-- ✅ **Code Organization**: Clean architecture, separation of concerns
-- ✅ **Documentation**: API documentation, README files, code comments
+### Backend Framework
+- **Django 5.2.6** - High-level Python web framework
+- **Django REST Framework 3.16.1** - Powerful toolkit for building Web APIs
+- **djangorestframework-simplejwt 5.5.1** - JWT authentication
 
-### System Design Excellence
-- ✅ **Microservices Architecture**: Designed and implemented multiple microservices
-- ✅ **Real-Time Systems**: WebSocket implementations with hub pattern
-- ✅ **Event-Driven Systems**: Redis Streams for event processing
-- ✅ **Database Design**: Optimized schemas with proper indexing
-- ✅ **Performance Optimization**: Caching strategies, query optimization
+### Database & Caching
+- **PostgreSQL 16** - Primary relational database
+- **Redis 7** - Caching and session storage
+- **django-redis 6.0.0** - Redis integration for Django
 
-### Production-Ready Solutions
-- ✅ **Containerization**: Docker and Docker Compose setups
-- ✅ **Authentication & Security**: JWT, OAuth, secure API design
-- ✅ **Payment Integration**: Multiple payment gateway integrations
-- ✅ **API Design**: RESTful APIs with comprehensive documentation
-- ✅ **Scalability**: Designed for horizontal scaling
+### Task Queue
+- **Celery 5.5.3** - Distributed task queue
+- **django-celery-beat 2.8.1** - Periodic task scheduler
+- **Flower 2.0.1** - Celery monitoring tool
+
+### Payment Gateways
+- **payme-pkg 3.0.29** - Payme payment integration
+- Custom implementations for Click, Uzum, and Multicard
+
+### Video & Media
+- **VdoCipher** - Secure video streaming platform
+- **Pillow 11.3.0** - Image processing
+- **WeasyPrint 66.0** - PDF generation for contracts
+
+### Authentication & Social
+- **django-allauth 65.11.1** - Authentication system
+- **social-auth-app-django 5.5.1** - Social authentication
+- **google-api-python-client 2.184.0** - Google OAuth
+
+### API Documentation
+- **drf-yasg 1.21.10** - Swagger/OpenAPI documentation
+
+### Other Key Libraries
+- **django-filter 25.1** - Advanced filtering
+- **django-cors-headers 4.8.0** - CORS handling
+- **django-environ 0.12.0** - Environment variables
+- **gunicorn 23.0.0** - WSGI HTTP server
+- **openai 1.107.1** - AI integration (for chat service)
 
 ---
 
-## 📈 GitHub Contribution Graph
+## 📁 Project Structure
+
+```
+edu-neosoft-api/
+├── authentication/          # User authentication & authorization
+│   ├── google/              # Google OAuth integration
+│   ├── manager/             # Manager-specific views
+│   ├── mentors/             # Mentor profiles & contracts
+│   └── students/            # Student-specific views
+│
+├── content/                 # Course & content management
+│   ├── mentors/             # Mentor content views
+│   ├── students/            # Student content views
+│   ├── chat_service/        # Chat functionality
+│   └── vdocipher/           # Video streaming integration
+│
+├── payment/                 # Payment processing
+│   ├── click/               # Click payment gateway
+│   ├── payme/               # Payme payment gateway
+│   ├── uzum/                # Uzum payment gateway
+│   ├── multicard/           # Multicard payment gateway
+│   ├── manager/             # Manager payment views
+│   └── students/            # Student payment views
+│
+├── notification/            # Notification system
+│   └── services.py          # Notification services
+│
+├── discount/                # Discount & promo code system
+│
+├── emails/                  # Email templates & sending
+│   ├── auth/                # Authentication emails
+│   └── content/             # Content-related emails
+│
+├── sms/                     # SMS sending service
+│   └── eskiz_client.py      # Eskiz SMS integration
+│
+├── utils/                   # Utility functions
+│   ├── generator_contract_pdf.py
+│   ├── sender_notification.py
+│   └── check_course_completion_code.py
+│
+├── signals/                 # Django signals
+│   ├── create_mentor_balance.py
+│   ├── discount_calculations.py
+│   └── payment_seperation.py
+│
+├── tasks/                   # Celery tasks
+│   └── clean_expired_notifications.py
+│
+├── permissions/             # Custom permissions
+│
+├── filters/                 # Custom filters
+│
+├── validators/              # Custom validators
+│
+├── i18n/                    # Internationalization
+│
+├── templates/               # HTML templates
+│
+├── static/                  # Static files
+│   └── images/              # Images (logo, stamps)
+│
+├── media/                   # User-uploaded media
+│
+├── edu_neosoft_api/        # Main project settings
+│   ├── settings/            # Environment-specific settings
+│   ├── urls.py              # Root URL configuration
+│   ├── celery.py            # Celery configuration
+│   └── wsgi.py              # WSGI configuration
+│
+├── docker-compose.yml       # Docker Compose configuration
+├── Dockerfile               # Docker image definition
+├── requirements.txt         # Python dependencies
+└── manage.py               # Django management script
+```
+
+---
+
+## 🗄️ Database Schema
+
+### Core Entity Relationship Diagram
+
+```mermaid
+erDiagram
+    CustomUser ||--o{ Enrollment : "enrolls"
+    CustomUser ||--o{ Order : "places"
+    CustomUser ||--o{ Notification : "receives"
+    CustomUser ||--o{ CourseRating : "rates"
+    
+    Category ||--o{ Course : "contains"
+    Course ||--o{ Lesson : "has"
+    Course ||--o{ Enrollment : "enrolled_in"
+    Course ||--o{ Order : "ordered"
+    Course ||--o{ CourseRating : "rated"
+    Course }o--o{ Discount : "has"
+    
+    Lesson ||--o{ Quiz : "has"
+    Lesson ||--o{ Resource : "has"
+    Lesson ||--o{ UserProgress : "tracks"
+    
+    Quiz ||--o{ Question : "contains"
+    Question ||--o{ Answer : "has"
+    
+    Enrollment ||--o{ UserProgress : "tracks"
+    
+    Order ||--o{ Transaction : "generates"
+    Discount ||--o{ Order : "applies_to"
+    
+    InstructorProfile ||--o{ Course : "teaches"
+    
+    CustomUser {
+        int id PK
+        string email UK
+        string first_name
+        string last_name
+        boolean is_mentor
+        boolean is_active
+    }
+    
+    Course {
+        int id PK
+        string title_uz
+        string title_ru
+        int price
+        int discount_price
+        int level
+        boolean is_published
+    }
+    
+    Lesson {
+        int id PK
+        int course_id FK
+        string title_uz
+        string video_id
+        int order
+        int weight
+    }
+    
+    Enrollment {
+        int id PK
+        int student_id FK
+        int course_id FK
+        int completion_percentage
+    }
+    
+    Order {
+        int id PK
+        int student_id FK
+        int course_id FK
+        int discount_id FK
+        int final_price
+        string status
+    }
+    
+    Transaction {
+        int id PK
+        int order_id FK
+        string provider
+        int amount
+        string status
+    }
+```
+
+### Key Models Overview
+
+| Model | Description | Key Fields |
+|-------|-------------|------------|
+| `CustomUser` | Base user model for all roles | email, first_name, last_name, is_mentor |
+| `Category` | Course categories with hierarchy | name_uz, name_ru, parent, slug |
+| `Course` | Course information | title_uz, title_ru, price, level, instructor |
+| `Lesson` | Individual lessons within courses | title_uz, video_id, order, weight |
+| `Enrollment` | Student course enrollments | student, course, completion_percentage |
+| `UserProgress` | Student progress tracking | enrollment, lesson, completed_at, quiz_score |
+| `Order` | Course purchase orders | student, course, final_price, status |
+| `Transaction` | Payment transactions | order, provider, amount, status |
+| `Discount` | Discount codes and promotions | name, discount_type, value, promo_code |
+| `Notification` | User notifications | user, type, title, message, is_read |
+
+---
+
+## 🚀 Installation
+
+### Prerequisites
+
+- Python 3.12+
+- PostgreSQL 16+
+- Redis 7+
+- Docker & Docker Compose (optional, for containerized deployment)
+
+### Local Development Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone https://gitlab.com/edvent/edu-neosoft-api.git
+   cd edu-neosoft-api
+   ```
+
+2. **Create and activate virtual environment**
+   ```bash
+   python3.12 -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
+
+5. **Set up PostgreSQL database**
+   ```bash
+   createdb edu_neosoft
+   ```
+
+6. **Run migrations**
+   ```bash
+   python manage.py migrate
+   ```
+
+7. **Create superuser**
+   ```bash
+   python manage.py createsuperuser
+   ```
+
+8. **Collect static files**
+   ```bash
+   python manage.py collectstatic --noinput
+   ```
+
+9. **Run development server**
+   ```bash
+   python manage.py runserver
+   ```
+
+### Docker Setup
+
+1. **Build and start containers**
+   ```bash
+   docker-compose up -d --build
+   ```
+
+2. **Run migrations**
+   ```bash
+   docker-compose exec api python manage.py migrate
+   ```
+
+3. **Create superuser**
+   ```bash
+   docker-compose exec api python manage.py createsuperuser
+   ```
+
+4. **Access services**
+   - API: http://localhost:8000
+   - Admin: http://localhost:8000/api/admin/
+   - Swagger: http://localhost:8000/api/swagger/
+   - Flower: http://localhost:5555
+
+---
+
+## ⚙️ Configuration
+
+### Environment Variables
+
+Create a `.env` file in the project root with the following variables:
+
+```env
+# Django Settings
+SECRET_KEY=your-secret-key-here
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# Database
+DB_NAME=edu_neosoft
+DB_USER=postgres
+DB_PASSWORD=postgres123
+DB_HOST=localhost
+DB_PORT=5432
+
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_DB=0
+
+# Celery
+CELERY_BROKER_URL=redis://localhost:6379/0
+CELERY_RESULT_BACKEND=redis://localhost:6379/0
+
+# VdoCipher
+VDOCIPHER_API_KEY=your-vdocipher-api-key
+
+# Payment Gateways
+PAYME_MERCHANT_ID=your-payme-merchant-id
+PAYME_KEY=your-payme-key
+CLICK_MERCHANT_ID=your-click-merchant-id
+CLICK_SERVICE_ID=your-click-service-id
+CLICK_SECRET_KEY=your-click-secret-key
+
+# Google OAuth
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+# SMS Service
+ESKIZ_EMAIL=your-eskiz-email
+ESKIZ_PASSWORD=your-eskiz-password
+
+# Email Settings
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=your-email@gmail.com
+EMAIL_HOST_PASSWORD=your-email-password
+
+# OpenAI (for chat service)
+OPENAI_API_KEY=your-openai-api-key
+```
+
+### Settings Structure
+
+The project uses environment-specific settings:
+- `base.py` - Base settings (shared configuration)
+- `prod.py` - Production settings (imports from base)
+
+---
+
+## 📚 API Documentation
+
+### Interactive Documentation
+
+- **Swagger UI**: `/api/swagger/` - Interactive API documentation
+- **ReDoc**: `/api/redoc/` - Alternative API documentation
+
+### Main API Endpoints
+
+#### Authentication
+- `POST /api/authentication/register/` - User registration
+- `POST /api/authentication/login/` - User login
+- `POST /api/authentication/logout/` - User logout
+- `POST /api/authentication/refresh/` - Refresh JWT token
+- `GET /api/authentication/profile/` - Get user profile
+- `PUT /api/authentication/profile/` - Update user profile
+
+#### Courses
+- `GET /api/content/courses/` - List all courses
+- `GET /api/content/courses/{id}/` - Get course details
+- `POST /api/content/courses/{id}/enroll/` - Enroll in course
+- `GET /api/content/courses/{id}/lessons/` - Get course lessons
+- `GET /api/content/lessons/{id}/` - Get lesson details
+
+#### Payments
+- `POST /api/payment/orders/` - Create order
+- `POST /api/payment/orders/{id}/pay/` - Process payment
+- `GET /api/payment/transactions/` - Get transaction history
+
+#### Notifications
+- `GET /api/notification/` - Get user notifications
+- `PUT /api/notification/{id}/read/` - Mark notification as read
+
+### Authentication
+
+The API uses JWT (JSON Web Tokens) for authentication. Include the token in the Authorization header:
+
+```
+Authorization: Bearer <your-access-token>
+```
+
+---
+
+## 🐳 Deployment
+
+### Production Deployment with Docker
+
+1. **Update environment variables for production**
+   ```bash
+   # Edit .env file with production values
+   DEBUG=False
+   ALLOWED_HOSTS=your-domain.com,www.your-domain.com
+   ```
+
+2. **Build and deploy**
+   ```bash
+   docker-compose -f docker-compose.yml up -d --build
+   ```
+
+3. **Run migrations**
+   ```bash
+   docker-compose exec api python manage.py migrate
+   ```
+
+4. **Collect static files**
+   ```bash
+   docker-compose exec api python manage.py collectstatic --noinput
+   ```
+
+### Services Overview
+
+The Docker Compose setup includes:
+- **API**: Django application (Gunicorn)
+- **PostgreSQL**: Database server
+- **Redis**: Cache and message broker
+- **Celery Worker**: Background task processor
+- **Celery Beat**: Periodic task scheduler
+- **Flower**: Celery monitoring dashboard
+- **Nginx**: Reverse proxy and load balancer
+
+### Monitoring
+
+- **Flower**: Monitor Celery tasks at `http://your-domain:5555`
+- **Django Admin**: Access admin panel at `/api/admin/`
+- **API Health**: Check API status via health check endpoint
+
+---
+
+## 🔄 Workflow Diagrams
+
+### Course Enrollment Flow
+
+```mermaid
+flowchart TD
+    A[Student Browses Courses] --> B[Select Course]
+    B --> C{Already Enrolled?}
+    C -->|Yes| D[Access Course Content]
+    C -->|No| E[Create Order]
+    E --> F[Apply Discount Code]
+    F --> G[Calculate Final Price]
+    G --> H[Select Payment Method]
+    H --> I[Process Payment]
+    I --> J{Payment Success?}
+    J -->|Yes| K[Create Enrollment]
+    K --> L[Send Confirmation Email]
+    L --> D
+    J -->|No| M[Payment Failed]
+    M --> N[Retry Payment]
+```
+
+### Lesson Completion Flow
+
+```mermaid
+flowchart TD
+    A[Student Watches Lesson] --> B[Video Progress Tracking]
+    B --> C{Video Complete?}
+    C -->|No| B
+    C -->|Yes| D[Take Quiz]
+    D --> E[Submit Answers]
+    E --> F[Calculate Quiz Score]
+    F --> G{Passing Score?}
+    G -->|Yes| H[Mark Lesson Complete]
+    G -->|No| I[Retake Quiz]
+    I --> D
+    H --> J[Update Progress]
+    J --> K{All Lessons Complete?}
+    K -->|Yes| L[Generate Certificate]
+    K -->|No| M[Continue to Next Lesson]
+```
+
+### Payment Processing Flow
+
+```mermaid
+flowchart TD
+    A[Create Order] --> B[Select Payment Gateway]
+    B --> C{Payment Gateway}
+    C -->|Payme| D[Payme API]
+    C -->|Click| E[Click API]
+    C -->|Uzum| F[Uzum API]
+    C -->|Multicard| G[Multicard API]
+    D --> H[Process Payment]
+    E --> H
+    F --> H
+    G --> H
+    H --> I{Payment Status}
+    I -->|Success| J[Update Order Status]
+    I -->|Failed| K[Update Order Status]
+    J --> L[Create Enrollment]
+    J --> M[Calculate Revenue Share]
+    M --> N[Update Mentor Balance]
+    M --> O[Update Platform Balance]
+    L --> P[Send Confirmation]
+```
+
+---
+
+## 🧪 Testing
+
+```bash
+# Run tests
+python manage.py test
+
+# Run tests with coverage
+coverage run --source='.' manage.py test
+coverage report
+```
+
+---
+
+## 📊 Performance Optimizations
+
+- **Redis Caching**: Frequently accessed data cached in Redis
+- **Database Indexing**: Optimized queries with proper indexes
+- **Select Related**: Reduced database queries with `select_related` and `prefetch_related`
+- **Pagination**: API responses paginated for large datasets
+- **Async Tasks**: Heavy operations moved to Celery background tasks
+- **CDN Integration**: Static files served via CDN (production)
+
+---
+
+## 🔒 Security Features
+
+- JWT-based authentication with refresh tokens
+- CORS configuration for API access control
+- SQL injection prevention (Django ORM)
+- XSS protection (Django template escaping)
+- CSRF protection for state-changing operations
+- Secure password hashing (Django's PBKDF2)
+- Environment variable management for secrets
+- Rate limiting on sensitive endpoints
+
+---
+
+## 📝 License
+
+This project is proprietary software. All rights reserved.
+
+---
+
+## 👥 Team
+
+**Edu NeoSoft Development Team**
+
+- **Contact**: dilshod.normurodov1392@gmail.com
+- **Website**: https://edu.neosoft.uz
+
+---
+
+## 🎯 Roadmap
+
+- [ ] Mobile app API endpoints optimization
+- [ ] Advanced analytics dashboard
+- [ ] Live streaming integration
+- [ ] AI-powered course recommendations
+- [ ] Enhanced reporting system
+- [ ] Multi-currency support
+- [ ] WebSocket support for real-time features
+
+---
+
+## 📞 Support
+
+For support, email dilshod.normurodov1392@gmail.com or create an issue in the repository.
+
+---
 
 <div align="center">
 
-[![GitHub Activity Graph](https://github-readme-activity-graph.vercel.app/graph?username=dilshod1405&theme=tokyo-night&hide_border=false&bg_color=0D1117&color=00D9FF&line=00D9FF&point=FFFFFF&area=true&area_color=00D9FF&custom_title=GitHub%20Contribution%20Activity)](https://github.com/ashutosh00710/github-readme-activity-graph)
+**Built with ❤️ by the Edu NeoSoft Team**
 
-</div>
-
----
-
-## 🎯 Current Focus & Goals
-
-### 🔨 Current Focus
-- Building scalable microservices architectures
-- Developing high-performance real-time communication systems
-- Creating modern, type-safe frontend applications
-- Optimizing database queries and system performance
-- Learning cloud-native technologies and best practices
-
-### 🎯 2025 Goals
-- [ ] Contribute more to open-source projects
-- [ ] Master advanced system design patterns
-- [ ] Explore cloud platforms (AWS, Kubernetes)
-- [ ] Build and launch personal SaaS projects
-- [ ] Share knowledge through technical blog posts
-- [ ] Achieve deeper expertise in distributed systems
-
----
-
-## 🤝 Connect With Me
-
-<div align="center">
-
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/dilshod-normurodov-0b886824b)
-[![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/architect_developer)
-[![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/shod_developer)
-[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/dilshod1405)
-
-</div>
-
----
-
-<div align="center">
-
-### 💡 Favorite Quote
-
-> *"The best code is not just working code, but code that is maintainable, scalable, and well-architected."*
-
----
-
-**⭐ If you find my work interesting, feel free to give my repositories a star!**
-
-*Last Updated: January 2025*
+[![Website](https://img.shields.io/badge/Website-edu.neosoft.uz-blue?style=flat-square)](https://edu.neosoft.uz)
+[![Email](https://img.shields.io/badge/Email-Contact-red?style=flat-square)](mailto:dilshod.normurodov1392@gmail.com)
 
 </div>
