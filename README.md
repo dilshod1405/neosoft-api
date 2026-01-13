@@ -27,6 +27,8 @@
 
 <!-- Replace with your homepage screenshot URL or path -->
 <img src="https://i.ibb.co/07bXktk/image-2026-01-13-09-21-01.png" alt="Edu NeoSoft Homepage" width="100%" style="max-width: 1200px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+<img src="https://i.ibb.co/ZRWg4KyK/image-2026-01-13-09-23-33.png" alt="Edu NeoSoft Homepage" width="100%" style="max-width: 1200px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+<img src="https://i.ibb.co/bg3z3H7V/image-2026-01-13-09-24-49.png" alt="Edu NeoSoft Homepage" width="100%" style="max-width: 1200px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
 
 *Edu NeoSoft Platform Homepage*
 
