@@ -5,6 +5,7 @@
 __pycache__/
 db.sqlite3
 media/
+
 staticfiles/
 private/
 
@@ -79,5 +80,10 @@ logs/
 
 # Media
 /media/
+
+# Static files - stamp images (sensitive, do not commit)
+/static/images/stamp.png
+/static/images/stamp_blue.png
+/static/images/stamp*.png
 
 #
